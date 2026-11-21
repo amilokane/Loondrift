@@ -47,7 +47,7 @@ policy_groups:
 
   - select:
       name: Proxy
-      policies: [Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Low Rate, High Rate, Manual, Other Regions]
+      policies: [Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Manual, Other Regions]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Proxy.png
 
   - select:
@@ -176,20 +176,6 @@ policy_groups:
       flatten: true
       filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://)).+$'
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Static.png
-
-  - select:
-      name: Low Rate
-      policies: [Manual]
-      flatten: true
-      filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?!.*(?:(?<![\d.])0*(?:1\.0*[1-9]\d*|(?:[2-9]\d*|1\d+)(?:\.\d+)?)\s*(?:(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z]))|倍率(?!\s*[:：]\s*\d)|倍)(?!\s*[\d.率])|(?:(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z]))|倍率\s*[:：]?)\s*0*(?:1\.0*[1-9]\d*|(?:[2-9]\d*|1\d+)(?:\.\d+)?)(?![\d.])))(?:(?=.*(?:(?<![\d.])0+(?:\.(?:[0-4]\d*|50*))?\s*(?:(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z]))|倍率(?!\s*[:：]\s*\d)|倍)(?!\s*[\d.率])|(?:(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z]))|倍率\s*[:：]?)\s*0+(?:\.(?:[0-4]\d*|50*))?(?![\d.])))|(?!.*(?:(?<![\d.])\d+(?:\.\d+)?\s*(?:(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z]))|倍率(?!\s*[:：]\s*\d)|倍)(?!\s*[\d.率])|(?:(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z]))|倍率\s*[:：]?)\s*\d+(?:\.\d+)?(?![\d.])))(?=.*(?:低倍|免费|(?<![A-Za-z])free(?![A-Za-z])|^(?!.*(?:客户端|软件)).*下载))).*$'
-      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Available.png
-
-  - select:
-      name: High Rate
-      policies: [Manual]
-      flatten: true
-      filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?:(?=.*(?:(?<![\d.])0*(?:1\.0*[1-9]\d*|(?:[2-9]\d*|1\d+)(?:\.\d+)?)\s*(?:(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z]))|倍率(?!\s*[:：]\s*\d)|倍)(?!\s*[\d.率])|(?:(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z]))|倍率\s*[:：]?)\s*0*(?:1\.0*[1-9]\d*|(?:[2-9]\d*|1\d+)(?:\.\d+)?)(?![\d.])))|(?!.*(?:(?<![\d.])\d+(?:\.\d+)?\s*(?:(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z]))|倍率(?!\s*[:：]\s*\d)|倍)(?!\s*[\d.率])|(?:(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z]))|倍率\s*[:：]?)\s*\d+(?:\.\d+)?(?![\d.])))(?=.*高倍)).*$'
-      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Airport.png
 
   - select:
       name: Other Regions

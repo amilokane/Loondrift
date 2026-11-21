@@ -14,7 +14,7 @@
 ## Egern 导入
 
 1. 在 Egern 首页导入 [Egern.yaml](Egern.yaml)。
-2. 添加自己的 Egern 兼容订阅，选择 `Airport` 策略组。地区组、倍率组和 `Smart` 会从这份订阅筛选节点。
+2. 添加自己的 Egern 兼容订阅，选择 `Airport` 策略组。地区组和 `Smart` 会从这份订阅筛选节点。
 3. `Proxy` 初始使用 `Smart`。海外 AI 优先选 `United States`，国内 AI 直连。如果订阅没有美国节点，可以在 `AI` 里切到 `Proxy`。
 
 `Smart` 使用 Egern 的智能选优，综合延迟、抖动和可靠性，并过滤已识别的高倍率节点。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups#智能选优)

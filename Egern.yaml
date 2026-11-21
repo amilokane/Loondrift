@@ -325,6 +325,11 @@ rules:
       name: 国内AI
       update_interval: 86400
   - rule_set:
+      match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/google-ai.yaml
+      policy: AI
+      name: Google AI
+      update_interval: 86400
+  - rule_set:
       match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/global.yaml
       policy: AI
       name: 海外AI

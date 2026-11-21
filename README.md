@@ -21,7 +21,7 @@
 
 导入配置会一并加载远程模块。默认启用「广告拦截&净化合集」「微博去广告&净化」「苹果天气增强」，以及哔哩哔哩、斗鱼、闲鱼、YouTube、淘宝、拼多多、网易云音乐和懂球帝八个单项。合集也包含这八个 App 的规则。要单独测试某个 App 的净化效果，可先关闭合集，再切换对应单项。`AdBlock` 控制主配置的域名广告规则，各模块在 Egern 的模块列表中开关。[Egern Hub 模块目录](https://egern.pages.dev/)
 
-需要 HTTPS 重写时，在 iOS 安装并信任自己的 Egern 证书，解密范围使用模块声明的域名。苹果天气增强默认将匹配的天气请求转交 `weatherkit.pages.dev`。IP 归属地模块默认关闭，开启后可在「IP 属地」策略组选择出口，初始跟随 `Proxy`。[Egern 模块文档](https://egernapp.com/zh-CN/docs/configuration/modules)
+需要 HTTPS 重写时，在 iOS 安装并信任自己的 Egern 证书，解密范围使用模块声明的域名。苹果天气增强默认将匹配的天气请求转交 `weatherkit.pages.dev`。`IP Attribution` 模块默认关闭，开启后可在 `IP Location` 策略组选择出口，初始跟随 `Proxy`。[Egern 模块文档](https://egernapp.com/zh-CN/docs/configuration/modules)
 
 Egern 版的服务与广告规则由 Repcz 从 blackmatrix7 转换为原生 YAML。国内 AI 和 Google AI 使用 VPSDance 的规则，ChatGPT、Claude 和 Threads 使用 MetaCubeX 的远程列表。[Repcz/EgernRules](https://github.com/Repcz/EgernRules) · [VPSDance/ai-proxy-rules](https://github.com/VPSDance/ai-proxy-rules/tree/main/rules/egern) · [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat/tree/meta/geo/geosite/classical)
 

@@ -1,4 +1,4 @@
-# Loondrift for Egern · 1.0.6
+# Loondrift for Egern · 1.0.7
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
 ipv6: true
@@ -114,8 +114,9 @@ policy_groups:
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/PayPal.png
 
   - select:
-      name: IP 属地
+      name: IP Location
       policies: [Proxy, Manual, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, DIRECT]
+      icon: mappin.circle.fill
 
   - select:
       name: AdBlock
@@ -363,8 +364,8 @@ modules:
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partD/AllFootball.yaml
     enabled: true
 
-  - name: IP 归属地伪装
+  - name: IP Attribution
     url: https://raw.githubusercontent.com/amilokane/Loondrift/main/plugin/ip-attribution.yaml
     enabled: false
     compat_arguments:
-      PROXY: IP 属地
+      PROXY: IP Location

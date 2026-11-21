@@ -2,11 +2,11 @@
 # 根据 Loondrift 的 ip-attribution.plugin 转换。
 # GPL-3.0，完整许可证见同目录 LICENSE。
 
-name: IP 归属地伪装
+name: IP Attribution
 description: 将匹配的业务流量交给指定代理策略，默认使用 Proxy。
 author: amilokane
-homepage: https://github.com/amilokane/Loondrift/blob/main/plugin/ip-attribution.plugin
-icon: https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/Proxy.png
+homepage: https://github.com/amilokane/Loondrift/blob/main/plugin/ip-attribution.yaml
+icon: mappin.circle.fill
 
 compat_arguments:
   PROXY: Proxy

@@ -206,208 +206,135 @@ policy_groups:
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Auto.png
 
 rules:
-  # 全局 STUN 拦截及本地优先规则。
-  - protocol:
-      match: stun
-      policy: REJECT
-  - domain:
-      match: dns.weixin.qq.com.cn
-      policy: DIRECT
-  - domain_suffix:
-      match: weixin.qq.com
-      policy: DIRECT
-  - domain_suffix:
-      match: weixin.com
-      policy: DIRECT
-  - domain_suffix:
-      match: wechat.com
-      policy: DIRECT
-  - domain_suffix:
-      match: wx.qq.com
-      policy: DIRECT
-  - domain_suffix:
-      match: wx.gtimg.com
-      policy: DIRECT
-  - domain_suffix:
-      match: servicewechat.com
-      policy: DIRECT
-  - domain_suffix:
-      match: weixinbridge.com
-      policy: DIRECT
-  - domain_suffix:
-      match: wechatpay.com
-      policy: DIRECT
-  - domain_suffix:
-      match: tenpay.com
-      policy: DIRECT
-  - domain_suffix:
-      match: wxs.qq.com
-      policy: DIRECT
-  - domain_suffix:
-      match: wxapp.tc.qq.com
-      policy: DIRECT
-  - domain_suffix:
-      match: qpic.cn
-      policy: DIRECT
-  - domain_suffix:
-      match: qlogo.cn
-      policy: DIRECT
-  - domain_suffix:
-      match: fsend.cn
-      policy: DIRECT
-  - domain:
-      match: international-gfe.download.nvidia.com
-      policy: DIRECT
-  - domain:
-      match: trae-api-sg.mchost.guru
-      policy: AI
-  - domain:
-      match: trae-api-us.mchost.guru
-      policy: AI
-  - domain_suffix:
-      match: trae.ai
-      policy: AI
-  - domain_suffix:
-      match: stripe.network
-      policy: AI
-  - domain_suffix:
-      match: stripecdn.com
-      policy: AI
-  - domain:
-      match: dns.alidns.com
-      policy: DIRECT
-  - domain:
-      match: doh.pub
-      policy: DIRECT
-
-  # 远程规则按 Loon 版的优先级顺序排列。
+  # 局域网与广告
   - rule_set:
+      name: 私有网络
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Lan/Lan.yaml
       policy: DIRECT
-      name: 私有网络
       update_interval: 86400
   - rule_set:
+      name: 广告拦截
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/AdvertisingLite/AdvertisingLite.yaml
       policy: AdBlock
-      name: 广告拦截
       update_interval: 86400
   - rule_set:
+      name: 广告域名
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/AdvertisingLite/AdvertisingLite_Domain.yaml
       policy: AdBlock
-      name: 广告域名
       update_interval: 86400
-  - domain_suffix:
-      match: threads.com
-      policy: Meta
-      name: Threads
-  - domain_suffix:
-      match: threads.net
-      policy: Meta
-      name: Threads
+
+  # 服务分流
   - rule_set:
+      name: Threads
+      match: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/threads.list
+      policy: Meta
+      update_interval: 86400
+  - rule_set:
+      name: FCM
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/GoogleFCM/GoogleFCM.yaml
       policy: Google
-      name: FCM
       update_interval: 86400
   - rule_set:
+      name: YouTube
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/YouTube/YouTube.yaml
       policy: YouTube
-      name: YouTube
       update_interval: 86400
   - rule_set:
+      name: TikTok
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/TikTok/TikTok.yaml
       policy: TikTok
-      name: TikTok
       update_interval: 86400
   - rule_set:
+      name: 国内AI
       match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/cn.yaml
       policy: DIRECT
-      name: 国内AI
       update_interval: 86400
   - rule_set:
+      name: Google AI
       match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/google-ai.yaml
       policy: AI
-      name: Google AI
       update_interval: 86400
   - rule_set:
+      name: 海外AI
       match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/global.yaml
       policy: AI
-      name: 海外AI
       update_interval: 86400
   - rule_set:
+      name: Google
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Google/Google.yaml
       policy: Google
-      name: Google
       update_interval: 86400
   - rule_set:
+      name: GitHub
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/GitHub/GitHub.yaml
       policy: GitHub
-      name: GitHub
       update_interval: 86400
   - rule_set:
+      name: Apple
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Apple/Apple.yaml
       policy: Apple
-      name: Apple
       update_interval: 86400
   - rule_set:
+      name: Apple域名
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Apple/Apple_Domain.yaml
       policy: Apple
-      name: Apple域名
       update_interval: 86400
   - rule_set:
+      name: Telegram
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Telegram/Telegram.yaml
       policy: Telegram
-      name: Telegram
       update_interval: 86400
   - rule_set:
+      name: Twitter
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Twitter/Twitter.yaml
       policy: Twitter
-      name: Twitter
       update_interval: 86400
   - rule_set:
+      name: Facebook
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Facebook/Facebook.yaml
       policy: Meta
-      name: Facebook
       update_interval: 86400
   - rule_set:
+      name: Netflix
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Netflix/Netflix.yaml
       policy: Netflix
-      name: Netflix
       update_interval: 86400
   - rule_set:
+      name: Spotify
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Spotify/Spotify.yaml
       policy: Spotify
-      name: Spotify
       update_interval: 86400
   - rule_set:
+      name: PayPal
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/PayPal/PayPal.yaml
       policy: PayPal
-      name: PayPal
       update_interval: 86400
   - rule_set:
+      name: Microsoft
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Microsoft/Microsoft.yaml
       policy: Microsoft
-      name: Microsoft
       update_interval: 86400
+
+  # 国内、海外与兜底
   - rule_set:
+      name: 国内综合
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/ChinaMax/ChinaMax.yaml
       policy: DIRECT
-      name: 国内综合
       update_interval: 86400
   - rule_set:
+      name: 国内域名
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/ChinaMax/ChinaMax_Domain.yaml
       policy: DIRECT
-      name: 国内域名
       update_interval: 86400
   - rule_set:
+      name: 非中国域名
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Global/Global.yaml
       policy: Proxy
-      name: 非中国域名
       update_interval: 86400
   - rule_set:
+      name: 非中国域名分表
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Global/Global_Domain.yaml
       policy: Proxy
-      name: 非中国域名分表
       update_interval: 86400
 
   - default:

@@ -1,10 +1,8 @@
-# Loondrift for Egern · 1.0.0
+# Loondrift for Egern · 1.0.1
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
 ipv6: true
 allow_external_connections: false
-http_port: 7222
-socks_port: 7221
 proxy_latency_test_url: https://www.apple.com/library/test/success.html
 direct_latency_test_url: http://connectivitycheck.platform.hicloud.com/generate_204
 hijack_dns: ['*']

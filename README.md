@@ -13,7 +13,7 @@
 
 ## Egern 导入
 
-1. 在 Egern 首页导入 [Egern.yaml](Egern.yaml)。
+1. 在 Egern 首页从 URL 导入 [Egern.yaml](https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml)。
 2. 添加自己的 Egern 兼容订阅，选择 `Airport` 策略组。地区组和 `Smart` 会从这份订阅筛选节点。
 3. `Proxy` 初始使用 `Smart`。海外 AI 优先选 `United States`，国内 AI 直连。如果订阅没有美国节点，可以在 `AI` 里切到 `Proxy`。
 
@@ -22,6 +22,8 @@
 域名广告由「AdBlock」控制。App 内去广告和增强插件需要单独安装。Egern 2.19.0 起支持导入 Loon 插件，建议逐个测试。需要 HTTPS 重写的模块还需在 Egern 中安装并信任证书。[Egern 官方文档](https://egernapp.com/zh-CN/docs/intro) · [Egern 版本记录](https://apps.apple.com/us/app/egern/id1616105820)
 
 Egern 版使用 blackmatrix7 规则的原生 YAML 转换版，以及 VPSDance 发布的 Egern AI 规则。[Repcz/EgernRules](https://github.com/Repcz/EgernRules) · [VPSDance/ai-proxy-rules](https://github.com/VPSDance/ai-proxy-rules/tree/main/rules/egern)
+
+每次更新 Egern 配置时，同步递增[文件首行的版本号](Egern.yaml#L1)。
 
 ## 快速导入
 

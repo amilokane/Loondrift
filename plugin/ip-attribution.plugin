@@ -1,28 +1,18 @@
 #!name=IP 归属地伪装
-#!desc=让指定 App 看到非大陆出口 IP。导入时把 PROXY 指到你自己的策略组即可，不需要改动配置。
+#!desc=导入后将 PROXY 绑定到目标策略，供匹配的业务接口使用。
 #!author=amilokane
 #!homepage=https://github.com/amilokane/Loondrift/blob/main/plugin/ip-attribution.plugin
 #!icon=https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/Proxy.png
 #!category=IP归属地
 
-# ============================================================
-# 规则来源：SunsetMkt/anti-ip-attribution 的 rules.yaml，233 条 / 33 组。
-# 收窄共享 Akamai 直连规则 1 条，转换后 236 条；其余规则保持上游顺序。
-#
-# 插件里只有三种策略：
-#   REJECT —— 阻断 App 私有 HTTPDNS，否则域名分流会被绕过
-#   DIRECT —— 视频 / 图片 / 静态资源 CDN，必须直连，否则会明显变慢
-#   PROXY  —— 需要改 IP 归属地的业务接口，导入时由你选择策略组
-#
-# 插件规则优先级低于配置里的本地 [Rule]。如果对方配置里也有本地的
-# GEOIP,CN,DIRECT，那下面这些 IP 规则会被它抢先直连；域名规则不受影响，仍然全部生效。
-# 在 Loon 的插件订阅中添加本文件的 Raw 链接，再将 PROXY 绑定到所选策略。
-# ============================================================
+# 上游规则 https://github.com/SunsetMkt/anti-ip-attribution/blob/c7481a9ab7f447c6ebccf2f010bd0f343d6f701d/rules.yaml
+# Loondrift 转为 Loon 格式并加入本地补充，注释整理于 2026-11-21。
+# GPL-3.0，完整许可证见同目录 LICENSE。
+# 主配置的本地规则优先匹配。
 
 [Rule]
 
-# ===== 哔哩哔哩（28 条）=====
-#   开头那批 REJECT 的 IP 是 App 私有 HTTPDNS，必须拦；后面才是业务接口和 CDN
+# 哔哩哔哩
 DOMAIN,httpdns.bilivideo.com,REJECT
 IP-CIDR,47.101.175.206/32,REJECT,no-resolve
 IP-CIDR,47.100.123.169/32,REJECT,no-resolve
@@ -52,7 +42,7 @@ DOMAIN-SUFFIX,upos-hz-mirrorakam.akamaized.net,DIRECT
 DOMAIN-SUFFIX,hdslb.com,DIRECT
 DOMAIN-SUFFIX,szbdyd.com,DIRECT
 
-# ===== 微博（7 条）=====
+# 微博
 DOMAIN-SUFFIX,weibo.cn,PROXY
 DOMAIN-SUFFIX,weibo.com,PROXY
 DOMAIN-SUFFIX,weibocdn.com,PROXY
@@ -61,7 +51,7 @@ DOMAIN-SUFFIX,wbimg.com,PROXY
 DOMAIN-SUFFIX,sinaimg.cn,PROXY
 DOMAIN-KEYWORD,weibo,PROXY
 
-# ===== 百度贴吧（13 条）=====
+# 百度贴吧
 DOMAIN,tieba.baidu.com,PROXY
 DOMAIN,tbmsg.baidu.com,PROXY
 DOMAIN,tb5.bdstatic.com,PROXY
@@ -76,20 +66,19 @@ DOMAIN,c.tieba.baidu.com,PROXY
 DOMAIN,httpdns.baidu.com,PROXY
 DOMAIN,httpdns.baidubce.com,PROXY
 
-# ===== 微信（4 条）=====
+# 微信
 DOMAIN,szshort.weixin.qq.com,PROXY
 DOMAIN,szextshort.weixin.qq.com,PROXY
 DOMAIN,szminorshort.weixin.qq.com,PROXY
 DOMAIN,mp.weixin.qq.com,PROXY
 
-# ===== 知乎（4 条）=====
+# 知乎
 DOMAIN-SUFFIX,zhihu.com,PROXY
 IP-CIDR,103.41.167.0/24,PROXY,no-resolve
 IP-CIDR,118.89.204.198/23,REJECT,no-resolve
 IP-CIDR6,2402:4e00:1200:ed00:0:9089:6dac:96b6/40,REJECT,no-resolve
 
-# ===== 抖音（17 条）=====
-#   关键词 + amemv.com 决定属地；zijieapi / ecombdapi 是素材 CDN，直连
+# 抖音
 DOMAIN-KEYWORD,core-c-lq,PROXY
 DOMAIN-KEYWORD,core-lq,PROXY
 DOMAIN-KEYWORD,normal-c-lq,PROXY
@@ -108,15 +97,14 @@ DOMAIN,sso.douyin.com,PROXY
 DOMAIN,www.douyin.com,PROXY
 DOMAIN-SUFFIX,snssdk.com,PROXY
 
-# ===== 头条（1 条）=====
+# 头条
 DOMAIN-SUFFIX,toutiaoapi.com,PROXY
 
-# ===== 快手（2 条）=====
+# 快手
 DOMAIN-SUFFIX,gifshow.com,PROXY
 DOMAIN-SUFFIX,ksapisrv.com,PROXY
 
-# ===== 小红书（76 条）=====
-#   大部分是 IP 段：App 会绕过域名直连 IP，只封域名没用
+# 小红书
 DOMAIN-SUFFIX,xiaohongshu.com,PROXY
 DOMAIN-KEYWORD,xiaohongshu,PROXY
 IP-CIDR,114.55.236.88/32,PROXY,no-resolve
@@ -194,47 +182,46 @@ IP-CIDR,150.109.222.99/32,PROXY,no-resolve
 IP-CIDR,150.109.222.110/32,PROXY,no-resolve
 IP-CIDR,203.205.220.62/32,PROXY,no-resolve
 
-# ===== 其乐论坛（1 条）=====
+# 其乐论坛
 DOMAIN,keylol.com,PROXY
 
-# ===== 西瓜视频（1 条）=====
+# 西瓜视频
 DOMAIN-SUFFIX,ixigua.com,PROXY
 
-# ===== 文叔叔（1 条）=====
+# 文叔叔
 DOMAIN,www.wenshushu.cn,PROXY
 
-# ===== 豆瓣（4 条）=====
+# 豆瓣
 IP-CIDR,119.29.29.98/32,REJECT,no-resolve
 IP-CIDR,120.53.130.158/32,PROXY,no-resolve
 DOMAIN,frodo.douban.com,PROXY
 DOMAIN,www.douban.com,PROXY
 
-# ===== 酷安（2 条）=====
+# 酷安
 DOMAIN,api.coolapk.com,PROXY
 DOMAIN,api2.coolapk.com,PROXY
 
-# ===== TapTap（1 条）=====
+# TapTap
 DOMAIN,api.taptapdada.com,PROXY
 
-# ===== 网易大神（1 条）=====
+# 网易大神
 DOMAIN,god.gameyw.netease.com,PROXY
 
-# ===== 虎牙（1 条）=====
+# 虎牙
 DOMAIN-SUFFIX,huya.com,PROXY
 
-# ===== 懂球帝（1 条）=====
+# 懂球帝
 DOMAIN-SUFFIX,dongqiudi.com,PROXY
 
-# ===== NGA（3 条）=====
+# NGA
 DOMAIN,ngabbs.com,PROXY
 DOMAIN,bbs.nga.cn,PROXY
 DOMAIN,nga.178.com,PROXY
 
-# ===== 小米社区（1 条）=====
+# 小米社区
 DOMAIN,api.vip.miui.com,PROXY
 
-# ===== 网易云音乐（30 条）=====
-#   API 域名 + 私有 HTTPDNS；结尾几条 IP 是 App 直连用的
+# 网易云音乐
 DOMAIN-SUFFIX,music.163.com,PROXY
 DOMAIN,nstool.netease.com,PROXY
 DOMAIN,wanproxy.127.net,PROXY
@@ -245,7 +232,6 @@ DOMAIN,api.k.163.com,PROXY
 DOMAIN,lbs.netease.im,PROXY
 DOMAIN,wannos.127.net,PROXY
 DOMAIN,ac.dun.163.com,PROXY
-# 当前抓包中此主机返回图片，优先于下面的后缀代理。
 DOMAIN,p1.music.126.net,DIRECT
 DOMAIN-SUFFIX,music.126.net,PROXY
 DOMAIN-SUFFIX,laiqukankan.com,PROXY
@@ -267,14 +253,12 @@ IP-CIDR,111.48.137.146/32,PROXY,no-resolve
 IP-CIDR,1.95.21.35/32,PROXY,no-resolve
 IP-CIDR,47.100.127.239/32,PROXY,no-resolve
 
-# ===== Lofter（3 条）=====
+# Lofter
 DOMAIN-SUFFIX,lofter.com,PROXY
 DOMAIN,yaolu.yuedu.163.com,PROXY
 DOMAIN-SUFFIX,lf127.net,DIRECT
 
-# ===== 斗鱼（16 条）=====
-#   前面是直播流 CDN（直连才不卡），最后两条才是业务接口
-#   抓包确认：apiv3.douyucdn.cn 的 homeHostV2 经美国出口返回 locality=美国。
+# 斗鱼
 DOMAIN-SUFFIX,hls3-akm.douyucdn.cn,DIRECT
 DOMAIN-SUFFIX,hlsa-akm.douyucdn.cn,DIRECT
 DOMAIN-SUFFIX,hls1a-akm.douyucdn.cn,DIRECT
@@ -292,69 +276,50 @@ DOMAIN-SUFFIX,img.douyucdn.cn,DIRECT
 DOMAIN-SUFFIX,douyucdn.cn,PROXY
 DOMAIN-SUFFIX,douyu.com,PROXY
 
-# ===== 米游社（2 条）=====
+# 米游社
 DOMAIN,bbs-api.mihoyo.com,PROXY
 DOMAIN,bbs-api.miyoushe.com,PROXY
 
-# ===== 豆瓣（续）（5 条）=====
+# 豆瓣（续）
 DOMAIN-SUFFIX,douban.com,PROXY
 IP-CIDR,49.233.242.15/32,PROXY,no-resolve
 IP-CIDR,81.70.124.99/32,PROXY,no-resolve
 IP-CIDR,81.70.125.19/32,PROXY,no-resolve
 IP-CIDR,140.143.177.206/32,PROXY,no-resolve
 
-# ===== 小黑盒（1 条）=====
+# 小黑盒
 DOMAIN,api.xiaoheihe.cn,PROXY
 
-# ===== QQ音乐（2 条）=====
+# QQ音乐
 DOMAIN,y.qq.com,DIRECT
 DOMAIN-SUFFIX,y.qq.com,PROXY
 
-# ===== 森空岛（1 条）=====
+# 森空岛
 DOMAIN,zonai.skland.com,PROXY
 
-# ===== Soul（3 条）=====
+# Soul
 DOMAIN,china-img.soulapp.cn,DIRECT
 DOMAIN,img.soulapp.cn,DIRECT
 DOMAIN-SUFFIX,soulapp.cn,PROXY
 
-# ===== 起点App（2 条）=====
+# 起点App
 DOMAIN,druidv6.if.qidian.com,PROXY
 DOMAIN,ptlogin6.qidian.com,PROXY
 
-# ===== 完美世界电竞App（1 条）=====
+# 完美世界电竞App
 DOMAIN,api.wmpvp.com,PROXY
 
-# ===== 虎扑（1 条）=====
+# 虎扑
 DOMAIN,bbs.mobileapi.hupu.com,PROXY
 
-# ===== IT之家（1 条）=====
+# IT之家
 DOMAIN,cmt.ithome.com,PROXY
 
-# 本仓库补丁：上游 SunsetMkt/anti-ip-attribution 没收录、抓包核对后补的规则。
-# 补充规则保留在所有上游分组之后。
-# 维护约定：只加「业务接口」域名；CDN / 静态资源不要加，否则视频图片会走代理变慢。
-# 不要加宽泛的 DOMAIN-KEYWORD：插件规则优先于订阅规则，关键词会把别的 App 的分流抢走
-# （-normal- 的教训见文件末尾）。能写 DOMAIN / DOMAIN-SUFFIX 就不要写关键词。
-
-# --- 抖音 --- 2026-09-21
-# 上游只收了 -lq / -hl / -lf 关键词，实际主机名是 life5-normal-m-hl（多 -m-）、
-# webcast5-core-hl（少 -c），一条都匹配不上。这两个主机名都在 amemv.com 下，整个后缀
-# 走代理即可；视频 / 图片 CDN 不在 amemv.com 下，不会被拖慢。
+# 抖音（补充）
 DOMAIN-SUFFIX,amemv.com,PROXY
 
-# --- 网易云音乐 --- 2026-09-21
-# 主 API 已被上游 music.163.com 覆盖，以下是抓包漏网域名。
+# 网易云音乐（补充）
 DOMAIN,httpdns.n.netease.com,REJECT
 DOMAIN-SUFFIX,look.163.com,PROXY
 DOMAIN-SUFFIX,crush.163.com,PROXY
 DOMAIN,fp-upload.dun.163.com,PROXY
-
-# --- 懂球帝 --- api.dongdianqiu.com 对照测试：直连 30 条均返回 200，测试美国节点 23 条均未收到 HTTP 响应。
-# --- 哔哩哔哩 --- 抓包确认：app.bilibili.com/x/v2/space 经美国出口返回自己的主页 IP 属地「美国」，响应未被改写。
-#   抓包中的主页请求均发生在发评论之后，触发属地更新的条件待对照验证。
-# --- 小红书 --- 已核对：上游覆盖完整，不需要补
-# --- -normal- 关键词 --- 2026-11-13 移除，故意不留规则：TikTok 的接口域名也带 -normal-
-#     （api16-normal-c-useast1a.tiktokv.com 等），会被它抢到插件绑定的策略组、走不到 TikTok 分组；
-#     抖音的 life5-normal-m-hl 已被上面的 amemv.com 覆盖。
-

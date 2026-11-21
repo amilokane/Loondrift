@@ -1,4 +1,4 @@
-# Loondrift for Egern · 1.0.1
+# Loondrift for Egern · 1.0.3
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
 ipv6: true
@@ -186,7 +186,21 @@ policy_groups:
       name: Smart
       policies: [Manual]
       flatten: true
-      filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?!.*高倍)(?!.*(?:(?<![\d.])0*(?:1\.0*[1-9]\d*|(?:[2-9]\d*|1\d+)(?:\.\d+)?)\s*(?:(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z]))|倍率(?!\s*[:：]\s*\d)|倍)(?!\s*[\d.率])|(?:(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z]))|倍率\s*[:：]?)\s*0*(?:1\.0*[1-9]\d*|(?:[2-9]\d*|1\d+)(?:\.\d+)?)(?![\d.]))).+$'
+      filter: |-
+        (?ix)^
+        (?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))
+        (?!.*高倍)
+        (?!.*(?:
+          # 后缀倍率，如 2x 01。编号与前缀倍率分开时，如 02 x0.5，留给下一分支。
+          (?<![\d.])0*(?:1\.0*[1-9]\d*|(?:[2-9]\d*|1\d+)(?:\.\d+)?)
+          (?!\s+(?:[*×✕✖⨯⨉x]|倍率)\s*\d)
+          \s*(?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z])|倍率(?!\s*[:：]\s*\d)|倍)(?![\d.率])
+          |
+          # 前缀倍率，如 x2、倍率：2。1x 02 中的 02 是编号。
+          (?!(?<=\d)(?:[*×✕✖⨯⨉x]|倍率)\s+\d)
+          (?:[*×✕✖⨯⨉]|(?<![A-Za-z])x(?![A-Za-z])|倍率\s*[:：]?)
+          \s*0*(?:1\.0*[1-9]\d*|(?:[2-9]\d*|1\d+)(?:\.\d+)?)(?![\d.])
+        )).+$
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Auto.png
 
 rules:
@@ -234,8 +248,13 @@ rules:
       policy: AI
       update_interval: 86400
   - rule_set:
-      name: 海外AI
-      match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/global.yaml
+      name: ChatGPT
+      match: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/openai.list
+      policy: AI
+      update_interval: 86400
+  - rule_set:
+      name: Claude
+      match: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/anthropic.list
       policy: AI
       update_interval: 86400
   - rule_set:

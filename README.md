@@ -3,13 +3,25 @@
 </p>
 
 <p align="center">
-  <strong>为 iPhone 准备的 Loon 分流配置</strong><br>
-  国内站点通常直连 · 海外 AI 独立选路 · 常用 App 去广告
+  <strong>为 iPhone 准备的 Loon 和 Egern 分流配置</strong><br>
+  国内站点通常直连 · 海外 AI 独立选路 · 域名广告拦截
 </p>
 
 <p align="center">
-  <a href="#快速导入"><strong>快速导入</strong></a>　·　<a href="Loon.conf">查看配置</a>　·　<a href="#常用策略">常用策略</a>
+  <a href="#egern-导入"><strong>Egern 导入</strong></a>　·　<a href="#快速导入">Loon 导入</a>　·　<a href="#常用策略">常用策略</a>
 </p>
+
+## Egern 导入
+
+1. 在 Egern 首页导入 [Egern.yaml](Egern.yaml)。
+2. 添加自己的 Egern 兼容订阅，选择 `Airport` 策略组。地区组、倍率组和 `Smart` 会从这份订阅筛选节点。
+3. `Proxy` 初始使用 `Smart`。海外 AI 优先选 `United States`，国内 AI 直连。如果订阅没有美国节点，可以在 `AI` 里切到 `Proxy`。
+
+`Smart` 使用 Egern 的智能选优，综合延迟、抖动和可靠性，并过滤已识别的高倍率节点。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups#智能选优)
+
+域名广告由「AdBlock」控制。App 内去广告和增强插件需要单独安装。Egern 2.19.0 起支持导入 Loon 插件，建议逐个测试。需要 HTTPS 重写的模块还需在 Egern 中安装并信任证书。[Egern 官方文档](https://egernapp.com/zh-CN/docs/intro) · [Egern 版本记录](https://apps.apple.com/us/app/egern/id1616105820)
+
+Egern 版使用 blackmatrix7 规则的原生 YAML 转换版，以及 VPSDance 发布的 Egern AI 规则。[Repcz/EgernRules](https://github.com/Repcz/EgernRules) · [VPSDance/ai-proxy-rules](https://github.com/VPSDance/ai-proxy-rules/tree/main/rules/egern)
 
 ## 快速导入
 

@@ -1,4 +1,4 @@
-# Loondrift for Egern · 1.0.18
+# Loondrift for Egern · 1.0.19
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
 ipv6: false
@@ -9,7 +9,7 @@ close_connections_on_policy_change: true
 hide_vpn_icon: false
 geoip_db_url: https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb
 asn_db_url: https://github.com/P3TERX/GeoLite.mmdb/releases/latest/download/GeoLite2-ASN.mmdb
-proxy_latency_test_url: https://www.gstatic.com/generate_204
+proxy_latency_test_url: https://cp.cloudflare.com/generate_204
 direct_latency_test_url: http://www.qq.com
 compat_route: false
 include_all_networks: true
@@ -28,6 +28,10 @@ dns:
       - https://1.1.1.1/dns-query
       - https://8.8.8.8/dns-query
   forward:
+    # 在选出可用代理之前，也能用当前网络的 DNS 解析测速域名。
+    - domain:
+        match: cp.cloudflare.com
+        value: system
     - proxy_rule_set:
         match: https://raw.githubusercontent.com/RiverFlowsInUUU/RFU-Rules/main/surge-ads.list
         value: reject
@@ -47,7 +51,8 @@ dns:
         match: '*'
         value: PUBLIC-DOH
   proxy_nameservers:
-    # Egern 建立代理连接时会直连这两个加密上游。
+    # 建立代理连接时直连加密 DNS，保留多个可用入口。
+    - https://223.5.5.5/dns-query
     - https://1.1.1.1/dns-query
     - https://8.8.8.8/dns-query
 
@@ -154,6 +159,7 @@ policy_groups:
       flatten: true
       filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?=.*(?:🇭🇰|香港|(?<![A-Za-z])HKG?(?![A-Za-z])|(?<![A-Za-z])hong\s*kong(?![A-Za-z]))).+$'
       interval: 300
+      timeout: 10
       tolerance: 50
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/HongKong.png
 
@@ -163,6 +169,7 @@ policy_groups:
       flatten: true
       filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?=.*(?:🇯🇵|日本|東京|东京|大阪|京都|(?<![A-Za-z])(?:JPN?|japan|tokyo|osaka|kyoto|NRT|HND|KIX|FUK|NGO|OSA|CTS|SDJ|OKA)(?![A-Za-z]))).+$'
       interval: 300
+      timeout: 10
       tolerance: 50
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Japan.png
 
@@ -172,6 +179,7 @@ policy_groups:
       flatten: true
       filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?=.*(?:🇺🇸|美国|美國|纽约|紐約|洛杉矶|洛杉磯|旧金山|舊金山|芝加哥|休斯顿|休斯頓|迈阿密|邁阿密|西雅图|西雅圖|波士顿|波士頓|华盛顿|華盛頓|拉斯维加斯|拉斯維加斯|圣何塞|聖何塞|圣地亚哥|聖地亞哥|(?<![A-Za-z])(?:USA?|united\s*states|los\s*angeles|new\s*york|san\s*francisco|chicago|houston|miami|seattle|boston|washington|las\s*vegas|san\s*jose|san\s*diego|LAX|SJC|SFO|SEA|ORD|JFK|DFW|IAD|PHX|ATL|BOS|MIA|EWR|LGA|IAH|HOU|DEN|OAK|ONT|SNA|LAS|PDX|DAL|SAN|SLC|MSP)(?![A-Za-z]))).+$'
       interval: 300
+      timeout: 10
       tolerance: 50
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/America.png
 
@@ -181,6 +189,7 @@ policy_groups:
       flatten: true
       filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?=.*(?:🇸🇬|新加坡|狮城|獅城|(?<![A-Za-z])(?:SGP?|SIN)(?![A-Za-z])|(?<![A-Za-z])singapore(?![A-Za-z]))).+$'
       interval: 300
+      timeout: 10
       tolerance: 50
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Singapore.png
 
@@ -190,6 +199,7 @@ policy_groups:
       flatten: true
       filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?=.*(?:🇹🇼|台湾|台灣|台北|高雄|(?<![A-Za-z])(?:TWN?|TPE)(?![A-Za-z])|(?<![A-Za-z])taiwan(?![A-Za-z]))).+$'
       interval: 300
+      timeout: 10
       tolerance: 50
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Taiwan.png
 
@@ -206,6 +216,7 @@ policy_groups:
       flatten: true
       filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?!.*(?:🇭🇰|香港|(?<![A-Za-z])HKG?(?![A-Za-z])|(?<![A-Za-z])hong\s*kong(?![A-Za-z])|🇯🇵|日本|東京|东京|大阪|京都|(?<![A-Za-z])(?:JPN?|japan|tokyo|osaka|kyoto|NRT|HND|KIX|FUK|NGO|OSA|CTS|SDJ|OKA)(?![A-Za-z])|🇺🇸|美国|美國|纽约|紐約|洛杉矶|洛杉磯|旧金山|舊金山|芝加哥|休斯顿|休斯頓|迈阿密|邁阿密|西雅图|西雅圖|波士顿|波士頓|华盛顿|華盛頓|拉斯维加斯|拉斯維加斯|圣何塞|聖何塞|圣地亚哥|聖地亞哥|(?<![A-Za-z])(?:USA?|united\s*states|los\s*angeles|new\s*york|san\s*francisco|chicago|houston|miami|seattle|boston|washington|las\s*vegas|san\s*jose|san\s*diego|LAX|SJC|SFO|SEA|ORD|JFK|DFW|IAD|PHX|ATL|BOS|MIA|EWR|LGA|IAH|HOU|DEN|OAK|ONT|SNA|LAS|PDX|DAL|SAN|SLC|MSP)(?![A-Za-z])|🇸🇬|新加坡|狮城|獅城|(?<![A-Za-z])(?:SGP?|SIN)(?![A-Za-z])|(?<![A-Za-z])singapore(?![A-Za-z])|🇹🇼|台湾|台灣|台北|高雄|(?<![A-Za-z])(?:TWN?|TPE)(?![A-Za-z])|(?<![A-Za-z])taiwan(?![A-Za-z]))).+$'
       interval: 300
+      timeout: 10
       tolerance: 50
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/WorldMap.png
 
@@ -213,6 +224,7 @@ policy_groups:
       name: Smart
       policies: [Low Mult., Auto, High Mult.]
       interval: 300
+      timeout: 10
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Auto.png
 
   # 优先低于 1 倍的节点，其次是未标倍率的节点，最后尝试标有 1 倍及以上的节点。
@@ -237,6 +249,7 @@ policy_groups:
         ))
         .+$
       interval: 300
+      timeout: 10
       tolerance: 50
       hidden: true
 
@@ -260,6 +273,7 @@ policy_groups:
         ))
         .+$
       interval: 300
+      timeout: 10
       tolerance: 50
       hidden: true
 
@@ -279,6 +293,7 @@ policy_groups:
         ))
         .+$
       interval: 300
+      timeout: 10
       tolerance: 50
       hidden: true
 

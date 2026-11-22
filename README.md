@@ -17,9 +17,9 @@
 2. 添加自己的 Egern 兼容订阅，选择 `Airport` 策略组。地区组和 `Smart` 会从这份订阅筛选节点。
 3. `Proxy` 初始使用 `Smart`。ChatGPT、Claude 和 Google AI 共用 `AI` 策略组，默认选 `United States`。国内 AI 直连。如果订阅没有美国节点，可以在 `AI` 里切到 `Proxy`。
 
-Egern 接管传统 DNS 查询。命中 RFU 广告名单的域名返回空响应，命中私有或国内域名名单的查询交给国内 DoH，其余查询经 `Proxy` 使用 Cloudflare 或 Google DoH。默认使用 Fake IP，局域网、游戏联机和时间同步等例外域名使用真实 IP。
+Egern 接管传统 DNS，向应用返回真实 IP。命中 RFU 广告名单的域名返回空响应。只有 `.local`、`.lan`、`.localdomain` 和 `.home.arpa` 交给系统 DNS。其他域名统一经 `Proxy` 向 Cloudflare 或 Google DoH 查询。国内网站的连接仍按服务规则直连，域名解析依赖可用代理，国内 CDN 选点可能改变。
 
-机场节点域名通过国内 DoH 直连解析，国内解析商可以看到接入网络的公网 IP。首次解析加密上游自身的主机名时，Egern 使用 `223.5.5.5` 或 `119.29.29.29` 的 UDP 53，当前网络可以看到这些引导查询。[Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
+建立代理连接时，Egern 会直连 `proxy_nameservers` 中的加密上游，解析商在这条路径上可以看到接入网络的公网 IP。两个 DoH 地址均使用 IP，正常连接它们无需明文查询上游主机名。若手机无法直连这两个上游，使用域名地址的机场节点可能无法连接。[Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
 
 地区组和倍率组每 300 秒测试一次到 `https://www.gstatic.com/generate_204` 的延迟，切换容差为 50 毫秒。`Smart` 优先使用低于 1 倍的节点，其次是未标倍率的节点，最后使用标注为 1 倍及以上的节点。要手动测试或固定使用某个节点，可在 `Manual` 组中操作。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups)
 

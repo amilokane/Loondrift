@@ -1,4 +1,4 @@
-# Loondrift for Egern · 1.0.15
+# Loondrift for Egern · 1.0.16
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
 ipv6: false
@@ -15,39 +15,15 @@ compat_route: false
 include_all_networks: true
 include_apns: false
 real_ip_domains:
-  - '*.lan'
-  - '*.local'
-  - '*.localdomain'
-  - '*.home.arpa'
-  - msftconnecttest.com
-  - '*.msftconnecttest.com'
-  - msftncsi.com
-  - '*.msftncsi.com'
-  - localhost.ptlogin2.qq.com
-  - srv.nintendo.net
-  - '*.srv.nintendo.net'
-  - stun.playstation.net
-  - '*.stun.playstation.net'
-  - xboxlive.com
-  - '*.xboxlive.com'
-  - 'stun.*'
-  - 'time.*.com'
-  - 'ntp.*.com'
-  - pool.ntp.org
-  - '*.pool.ntp.org'
-  - market.xiaomi.com
-  - '*.market.xiaomi.com'
+  - '*'
 hijack_dns:
   - '*'
 dns:
-  # 仅用于引导加密 DNS 上游；Egern 通过直连 UDP 53 解析上游主机名。
+  # 下列 DoH 均使用 IP 地址，正常连接这些上游无需引导查询。
   bootstrap:
-    - 223.5.5.5
-    - 119.29.29.29
+    - 1.1.1.1
+    - 8.8.8.8
   upstreams:
-    CN-DOH:
-      - https://doh.18bit.cn/dns-query
-      - https://dns.alidns.com/dns-query
     PUBLIC-DOH:
       - https://1.1.1.1/dns-query
       - https://8.8.8.8/dns-query
@@ -55,18 +31,25 @@ dns:
     - proxy_rule_set:
         match: https://raw.githubusercontent.com/RiverFlowsInUUU/RFU-Rules/main/surge-ads.list
         value: reject
-    - proxy_rule_set:
-        match: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/private.list
-        value: CN-DOH
-    - proxy_rule_set:
-        match: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/cn.list
-        value: CN-DOH
+    - domain_suffix:
+        match: local
+        value: system
+    - domain_suffix:
+        match: lan
+        value: system
+    - domain_suffix:
+        match: localdomain
+        value: system
+    - domain_suffix:
+        match: home.arpa
+        value: system
     - domain_wildcard:
         match: '*'
         value: PUBLIC-DOH
   proxy_nameservers:
-    - https://doh.18bit.cn/dns-query
-    - https://dns.alidns.com/dns-query
+    # Egern 建立代理连接时会直连这两个加密上游。
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
 
 default_subscription_group: Airport
 default_proxy_group: Manual
@@ -274,12 +257,6 @@ policy_groups:
       hidden: true
 
 rules:
-  - domain:
-      match: doh.18bit.cn
-      policy: DIRECT
-  - domain:
-      match: dns.alidns.com
-      policy: DIRECT
   - ip_cidr:
       match: 1.1.1.1/32
       policy: Proxy

@@ -21,7 +21,9 @@ Egern 接管传统 DNS，向应用返回真实 IP。命中 RFU 广告名单的�
 
 建立代理连接时，Egern 会直连 `proxy_nameservers` 中的加密上游，解析商在这条路径上可以看到接入网络的公网 IP。两个 DoH 地址均使用 IP，正常连接它们无需明文查询上游主机名。若手机无法直连这两个上游，使用域名地址的机场节点可能无法连接。[Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
 
-地区组和倍率组每 300 秒测试一次到 `https://www.gstatic.com/generate_204` 的延迟，切换容差为 50 毫秒。`Smart` 优先使用低于 1 倍的节点，其次是未标倍率的节点，最后使用标注为 1 倍及以上的节点。要手动测试或固定使用某个节点，可在 `Manual` 组中操作。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups)
+地区组支持按机场三字码识别节点，例如 LAX（美国）、HND（日本）、SIN（新加坡）和 TPE（台湾）。地区组和倍率组每 300 秒测试一次到 `https://www.gstatic.com/generate_204` 的延迟，切换容差为 50 毫秒。
+
+`Smart` 优先使用低于 1 倍的节点，其次是未标倍率的节点，最后使用标注为 1 倍及以上的节点。筛选时优先识别明确的高倍率标记，例如 `日本 v0.8 2x` 按 2 倍归组。单独标出的 `0.5` 仍按低倍率归组。要手动测试或固定使用某个节点，可在 `Manual` 组中操作。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups)
 
 配置中的 12 个模块默认全部启用。广告合集与八个 App 单项含有重叠的匹配规则，排查某个 App 的重写效果时，可临时关闭合集，单独测试对应模块。`AdBlock` 控制主配置中的广告分流规则，DNS 层的 RFU 广告名单独立生效。[Egern Hub 模块目录](https://egern.pages.dev/)
 

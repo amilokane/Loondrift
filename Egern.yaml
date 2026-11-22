@@ -1,4 +1,4 @@
-# Loondrift for Egern · 1.0.20
+# Loondrift for Egern · 1.0.21
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
 ipv6: false
@@ -432,16 +432,24 @@ rules:
       policy: Final
 
 modules:
-  - name: 广告拦截&净化合集
-    url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/blockAds.yaml
+  - name: 广告平台拦截器
+    url: https://kelee.one/Tool/Loon/Lpx/BlockAdvertisers.lpx
+    enabled: true
+  - name: HTTPDNS拦截器
+    url: https://kelee.one/Tool/Loon/Lpx/Block_HTTPDNS.lpx
+    enabled: true
+  - name: 可莉广告过滤器
+    url: https://kelee.one/Tool/Loon/Lpx/Remove_ads_by_keli.lpx
+    enabled: true
+  - name: Apple天气增强
+    url: https://kelee.one/Tool/Loon/Lpx/AppleWeatherEnhancer.lpx
+    enabled: true
+  - name: Loon&Surge 2 Egern
+    url: https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Egern/modules/pluginhub.yaml
     enabled: true
   - name: 微博去广告&净化
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/weibo.yaml
     enabled: true
-  - name: 苹果天气增强
-    url: https://egern.pages.dev/modules/NSRingo/WeatherKit/modules/iRingo.WeatherKit.Rewrite.yaml
-    enabled: true
-  # 以下八个单项与合集同时启用，部分请求会匹配相同的规则。
   - name: 哔哩哔哩
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partB/bilibili.yaml
     enabled: true

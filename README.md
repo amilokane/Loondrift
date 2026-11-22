@@ -25,9 +25,9 @@ Egern 接管传统 DNS，向应用返回真实 IP。命中 RFU 广告名单的�
 
 `Smart` 优先使用低于 1 倍的节点，其次是未标倍率的节点，最后使用标注为 1 倍及以上的节点。筛选时优先识别明确的高倍率标记，例如 `日本 v0.8 2x` 按 2 倍归组。单独标出的 `0.5` 仍按低倍率归组。要手动测试或固定使用某个节点，可在 `Manual` 组中操作。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups)
 
-配置中的 12 个模块默认全部启用。广告合集与八个 App 单项含有重叠的匹配规则，排查某个 App 的重写效果时，可临时关闭合集，单独测试对应模块。`AdBlock` 控制主配置中的广告分流规则，DNS 层的 RFU 广告名单独立生效。[Egern Hub 模块目录](https://egern.pages.dev/)
+配置中的 15 个模块默认全部启用。前四项为广告平台拦截器、HTTPDNS拦截器、可莉广告过滤器和 Apple天气增强。第五项 Loon&Surge 2 Egern 可让可莉插件中心等站点的安装链接在 Egern 中打开。其后是微博等九个 App 单项和 IP Attribution。`AdBlock` 控制主配置中的广告分流规则，DNS 层的 RFU 广告名单独立生效。[Egern Hub 模块目录](https://egern.pages.dev/) · [可莉插件中心](https://hub.kelee.one/)
 
-需要 HTTPS 重写时，在 iOS 安装并信任自己的 Egern 证书，解密范围使用模块声明的域名。苹果天气增强默认将匹配的天气请求转交 `weatherkit.pages.dev`。`IP Attribution` 模块使用 `IP Location` 策略组，初始跟随 `Proxy`。[Egern 模块文档](https://egernapp.com/zh-CN/docs/configuration/modules)
+需要 HTTPS 重写时，在 iOS 安装并信任自己的 Egern 证书，解密范围使用模块声明的域名。`IP Attribution` 模块使用 `IP Location` 策略组，初始跟随 `Proxy`。[Egern 模块文档](https://egernapp.com/zh-CN/docs/configuration/modules)
 
 Egern 版的服务与广告规则由 Repcz 从 blackmatrix7 转换为原生 YAML。国内 AI 和 Google AI 使用 VPSDance 的规则，ChatGPT、Claude 和 Threads 使用 MetaCubeX 的远程列表。[Repcz/EgernRules](https://github.com/Repcz/EgernRules) · [VPSDance/ai-proxy-rules](https://github.com/VPSDance/ai-proxy-rules/tree/main/rules/egern) · [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat/tree/meta/geo/geosite/classical)
 

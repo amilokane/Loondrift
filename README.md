@@ -17,13 +17,13 @@
 2. 添加自己的 Egern 兼容订阅，选择 `Airport` 策略组。地区组和 `Smart` 会从这份订阅筛选节点。
 3. `Proxy` 初始使用 `Smart`。ChatGPT、Claude 和 Google AI 共用 `AI` 策略组，默认选 `United States`。国内 AI 直连。如果订阅没有美国节点，可以在 `AI` 里切到 `Proxy`。
 
-Egern 默认使用隐私优先的 DNS 设置。虚拟网卡接管传统 DNS，受管域名返回真实 IP，以减少代理节点自行解析目标域名的机会。`.local`、`.lan`、`home.arpa` 和「私有网络」名单内的名称交给系统 DNS（包括路由器管理域名）。其余域名统一使用 Cloudflare 或 Google DoH，两个上游均使用 IP 地址，默认 DNS 到上游的连接固定走 `Proxy`。国内网站仍按流量规则直连，但域名解析依赖可用代理，国内 CDN 的选点和速度可能改变。
+Egern 接管传统 DNS 查询。命中 RFU 广告名单的域名返回空响应，命中私有或国内域名名单的查询交给国内 DoH，其余查询经 `Proxy` 使用 Cloudflare 或 Google DoH。默认使用 Fake IP，局域网、游戏联机和时间同步等例外域名使用真实 IP。
 
-配置启用了 `include_all_networks`，并在 Egern 规则内拦截应用对旧阿里、腾讯 DNS 地址及对应域名的 53、443、853 端口连接。Egern 自身的代理 DNS 会直连 `proxy_nameservers` 中的境外 DoH，解析商在这条路径上仍可看到接入网络的公网 IP。代理服务端自己的解析、应用自带的其他加密 DNS 和 iOS 排除的流量也可能影响真机结果。更新原配置并重新连接即可生效。[Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
+机场节点域名通过国内 DoH 直连解析，国内解析商可以看到接入网络的公网 IP。首次解析加密上游自身的主机名时，Egern 使用 `223.5.5.5` 或 `119.29.29.29` 的 UDP 53，当前网络可以看到这些引导查询。[Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
 
-`Smart` 使用 Egern 的智能选优，综合延迟、抖动和可靠性，并过滤已识别的高倍率节点。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups#智能选优)
+地区组和倍率组每 300 秒测试一次到 `https://www.gstatic.com/generate_204` 的延迟，切换容差为 50 毫秒。`Smart` 优先使用低于 1 倍的节点，其次是未标倍率的节点，最后使用标注为 1 倍及以上的节点。要手动测试或固定使用某个节点，可在 `Manual` 组中操作。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups)
 
-导入配置会一并加载远程模块。默认启用「广告拦截&净化合集」「微博去广告&净化」「苹果天气增强」，以及哔哩哔哩、斗鱼、闲鱼、YouTube、淘宝、拼多多、网易云音乐和懂球帝八个单项。合集也包含这八个 App 的规则。要单独测试某个 App 的净化效果，可先关闭合集，再切换对应单项。`AdBlock` 控制主配置的域名广告规则，各模块在 Egern 的模块列表中开关。[Egern Hub 模块目录](https://egern.pages.dev/)
+默认启用「广告拦截&净化合集」「微博去广告&净化」「苹果天气增强」。合集已覆盖的八个 App 单项默认关闭。要单独测试某个 App，可先关闭合集，再启用对应单项。`AdBlock` 控制主配置中的广告分流规则，DNS 层的 RFU 广告名单独立生效。[Egern Hub 模块目录](https://egern.pages.dev/)
 
 需要 HTTPS 重写时，在 iOS 安装并信任自己的 Egern 证书，解密范围使用模块声明的域名。苹果天气增强默认将匹配的天气请求转交 `weatherkit.pages.dev`。`IP Attribution` 模块默认关闭，开启后可在 `IP Location` 策略组选择出口，初始跟随 `Proxy`。[Egern 模块文档](https://egernapp.com/zh-CN/docs/configuration/modules)
 

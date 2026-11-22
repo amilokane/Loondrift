@@ -17,9 +17,9 @@
 2. 添加自己的 Egern 兼容订阅，选择 `Airport` 策略组。地区组和 `Smart` 会从这份订阅筛选节点。
 3. `Proxy` 初始使用 `Smart`。ChatGPT、Claude 和 Google AI 共用 `AI` 策略组，默认选 `United States`。国内 AI 直连。如果订阅没有美国节点，可以在 `AI` 里切到 `Proxy`。
 
-Egern 在虚拟网卡内接管传统 DNS。局域网名称使用当前网络的系统 DNS。国内 AI、国内综合以及默认直连的 Apple、Microsoft 使用阿里或腾讯 DoH。海外服务和其余域名使用 Cloudflare 或 Google DoH，默认 DNS 到这两个上游的连接固定走 `Proxy`，切换 `Final` 也保持该出口。DNS 和流量分流按相同的服务优先级匹配。手动把 Apple 或 Microsoft 切到代理时，对应的 DNS 规则仍使用国内 DoH。
+Egern 默认使用隐私优先的 DNS 设置。虚拟网卡接管传统 DNS，受管域名返回真实 IP，以减少代理节点自行解析目标域名的机会。`.local`、`.lan`、`home.arpa` 和「私有网络」名单内的名称交给系统 DNS（包括路由器管理域名）。其余域名统一使用 Cloudflare 或 Google DoH，两个上游均使用 IP 地址，默认 DNS 到上游的连接固定走 `Proxy`。国内网站仍按流量规则直连，但域名解析依赖可用代理，国内 CDN 的选点和速度可能改变。
 
-Egern 的代理 DNS 会直连 `proxy_nameservers` 中的 Cloudflare 或 Google DoH。解析商在这条路径上可以看到接入网络的公网 IP 和所查域名。如果当前网络无法直连这两个上游，依赖这条路径的连接可能失败。App 自带的 DoH/DoT 也有独立出口。重新载入本地配置并连接可用节点后，可在 Wi-Fi 和蜂窝网络各跑一次 DNS 泄露测试，同时检查 Egern 的连接记录。默认海外 DoH 的目标应为 `1.1.1.1:443` 或 `8.8.8.8:443`，策略应为 `Proxy`。测试页显示的是递归解析商，连接记录有助于区分代理和直连。[Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
+配置启用了 `include_all_networks`，并在 Egern 规则内拦截应用对旧阿里、腾讯 DNS 地址及对应域名的 53、443、853 端口连接。Egern 自身的代理 DNS 会直连 `proxy_nameservers` 中的境外 DoH，解析商在这条路径上仍可看到接入网络的公网 IP。代理服务端自己的解析、应用自带的其他加密 DNS 和 iOS 排除的流量也可能影响真机结果。更新原配置并重新连接即可生效。[Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
 
 `Smart` 使用 Egern 的智能选优，综合延迟、抖动和可靠性，并过滤已识别的高倍率节点。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups#智能选优)
 

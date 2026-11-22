@@ -17,6 +17,8 @@
 2. 添加自己的 Egern 兼容订阅，选择 `Airport` 策略组。地区组和 `Smart` 会从这份订阅筛选节点。
 3. `Proxy` 初始使用 `Smart`。ChatGPT、Claude 和 Google AI 共用 `AI` 策略组，默认选 `United States`。国内 AI 直连。如果订阅没有美国节点，可以在 `AI` 里切到 `Proxy`。
 
+普通公网域名统一由 `Proxy` 经 HTTPS 向 Cloudflare 查询，国内直连站点的 DNS 也依赖可用节点。`.local`、`.lan` 和 `home.arpa` 交给系统 DNS，使用真实 IP 直连，方便访问路由器、打印机或 NAS。Egern 的代理 DNS 单独使用直连的阿里 DoH。[Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
+
 `Smart` 使用 Egern 的智能选优，综合延迟、抖动和可靠性，并过滤已识别的高倍率节点。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups#智能选优)
 
 导入配置会一并加载远程模块。默认启用「广告拦截&净化合集」「微博去广告&净化」「苹果天气增强」，以及哔哩哔哩、斗鱼、闲鱼、YouTube、淘宝、拼多多、网易云音乐和懂球帝八个单项。合集也包含这八个 App 的规则。要单独测试某个 App 的净化效果，可先关闭合集，再切换对应单项。`AdBlock` 控制主配置的域名广告规则，各模块在 Egern 的模块列表中开关。[Egern Hub 模块目录](https://egern.pages.dev/)

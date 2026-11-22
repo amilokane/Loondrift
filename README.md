@@ -21,7 +21,7 @@ Egern 接管传统 DNS，向应用返回真实 IP。命中 RFU 广告名单的�
 
 建立代理连接时，Egern 会直连 `proxy_nameservers` 中的加密上游，解析商在这条路径上可以看到接入网络的公网 IP。阿里、Cloudflare 和 Google 的 DoH 均使用 IP 地址，正常连接它们无需明文查询上游主机名。若这些上游均无法直连，使用域名地址的机场节点可能无法连接。[Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
 
-地区组支持按机场三字码识别节点，例如 LAX（美国）、HND（日本）、SIN（新加坡）和 TPE（台湾）。地区组和倍率组每 300 秒测试一次到 `https://cp.cloudflare.com/generate_204` 的延迟，切换容差为 50 毫秒。自动测速和 `Smart` 健康检查的单次超时为 10 秒。
+地区组支持按机场三字码识别节点，例如 LAX（美国）、HND（日本）、SIN（新加坡）和 TPE（台湾）。Other Regions 列出未命中五个地区筛选条件的节点，由用户手动选择。香港、日本、美国、新加坡、台湾五个地区组和倍率组每 300 秒测试一次到 `https://cp.cloudflare.com/generate_204` 的延迟，切换容差为 50 毫秒。自动测速和 `Smart` 健康检查的单次超时为 10 秒。
 
 `Smart` 优先使用低于 1 倍的节点，其次是未标倍率的节点，最后使用标注为 1 倍及以上的节点。筛选时优先识别明确的高倍率标记，例如 `日本 v0.8 2x` 按 2 倍归组。单独标出的 `0.5` 仍按低倍率归组。要手动测试或固定使用某个节点，可在 `Manual` 组中操作。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups)
 

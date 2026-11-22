@@ -14,7 +14,7 @@
 ## Egern 导入
 
 1. 在 Egern 首页从 URL 导入 [Egern.yaml](https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml)。
-2. 添加自己的 Egern 兼容订阅，选择 `Airport` 策略组。地区组和 `Smart` 会从这份订阅筛选节点。
+2. 添加自己的 Egern 兼容订阅，默认归入隐藏的 `Airport` 组。可在 `Manual` 中查看和选择节点，地区组和 `Smart` 会从这份订阅筛选节点。
 3. `Proxy` 初始使用 `Smart`。ChatGPT、Claude 和 Google AI 共用 `AI` 策略组，默认选 `United States`。国内 AI 直连。如果订阅没有美国节点，可以在 `AI` 里切到 `Proxy`。
 
 Egern 接管传统 DNS，向应用返回真实 IP。命中 RFU 广告名单的域名返回空响应。只有 `.local`、`.lan`、`.localdomain` 和 `.home.arpa` 交给系统 DNS。其他域名统一经 `Proxy` 向 Cloudflare 或 Google DoH 查询。国内网站的连接仍按服务规则直连，域名解析依赖可用代理，国内 CDN 选点可能改变。
@@ -23,9 +23,9 @@ Egern 接管传统 DNS，向应用返回真实 IP。命中 RFU 广告名单的�
 
 地区组和倍率组每 300 秒测试一次到 `https://www.gstatic.com/generate_204` 的延迟，切换容差为 50 毫秒。`Smart` 优先使用低于 1 倍的节点，其次是未标倍率的节点，最后使用标注为 1 倍及以上的节点。要手动测试或固定使用某个节点，可在 `Manual` 组中操作。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups)
 
-默认启用「广告拦截&净化合集」「微博去广告&净化」「苹果天气增强」。合集已覆盖的八个 App 单项默认关闭。要单独测试某个 App，可先关闭合集，再启用对应单项。`AdBlock` 控制主配置中的广告分流规则，DNS 层的 RFU 广告名单独立生效。[Egern Hub 模块目录](https://egern.pages.dev/)
+配置中的 12 个模块默认全部启用。广告合集与八个 App 单项含有重叠的匹配规则，排查某个 App 的重写效果时，可临时关闭合集，单独测试对应模块。`AdBlock` 控制主配置中的广告分流规则，DNS 层的 RFU 广告名单独立生效。[Egern Hub 模块目录](https://egern.pages.dev/)
 
-需要 HTTPS 重写时，在 iOS 安装并信任自己的 Egern 证书，解密范围使用模块声明的域名。苹果天气增强默认将匹配的天气请求转交 `weatherkit.pages.dev`。`IP Attribution` 模块默认关闭，开启后可在 `IP Location` 策略组选择出口，初始跟随 `Proxy`。[Egern 模块文档](https://egernapp.com/zh-CN/docs/configuration/modules)
+需要 HTTPS 重写时，在 iOS 安装并信任自己的 Egern 证书，解密范围使用模块声明的域名。苹果天气增强默认将匹配的天气请求转交 `weatherkit.pages.dev`。`IP Attribution` 模块使用 `IP Location` 策略组，初始跟随 `Proxy`。[Egern 模块文档](https://egernapp.com/zh-CN/docs/configuration/modules)
 
 Egern 版的服务与广告规则由 Repcz 从 blackmatrix7 转换为原生 YAML。国内 AI 和 Google AI 使用 VPSDance 的规则，ChatGPT、Claude 和 Threads 使用 MetaCubeX 的远程列表。[Repcz/EgernRules](https://github.com/Repcz/EgernRules) · [VPSDance/ai-proxy-rules](https://github.com/VPSDance/ai-proxy-rules/tree/main/rules/egern) · [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat/tree/meta/geo/geosite/classical)
 

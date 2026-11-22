@@ -1,4 +1,4 @@
-# Loondrift for Egern · 1.0.16
+# Loondrift for Egern · 1.0.17
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
 ipv6: false
@@ -58,6 +58,7 @@ policy_groups:
   - external:
       name: Airport
       type: select
+      hidden: true
       urls: []
       update_interval: 86400
       icon: tray.and.arrow.down
@@ -403,34 +404,34 @@ modules:
   - name: 苹果天气增强
     url: https://egern.pages.dev/modules/NSRingo/WeatherKit/modules/iRingo.WeatherKit.Rewrite.yaml
     enabled: true
-  # 合集已覆盖以下八个 App 的匹配规则。改用单项时，先关闭合集。
+  # 以下八个单项与合集同时启用，部分请求会匹配相同的规则。
   - name: 哔哩哔哩
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partB/bilibili.yaml
-    enabled: false
+    enabled: true
   - name: 斗鱼直播
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partD/DouyuLive.yaml
-    enabled: false
+    enabled: true
   - name: 闲鱼
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partX/XianYu.yaml
-    enabled: false
+    enabled: true
   - name: YouTube
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partY/YouTube.yaml
-    enabled: false
+    enabled: true
   - name: 淘宝
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partT/Taobao.yaml
-    enabled: false
+    enabled: true
   - name: 拼多多
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partP/Pinduoduo.yaml
-    enabled: false
+    enabled: true
   - name: 网易云音乐
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partW/NetEaseCloudMusic.yaml
-    enabled: false
+    enabled: true
   - name: 懂球帝
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partD/AllFootball.yaml
-    enabled: false
+    enabled: true
 
   - name: IP Attribution
     url: https://raw.githubusercontent.com/amilokane/Loondrift/main/plugin/ip-attribution.yaml
-    enabled: false
+    enabled: true
     compat_arguments:
       PROXY: IP Location

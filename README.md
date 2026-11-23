@@ -121,7 +121,7 @@ Egern 接管系统的 DNS 查询，向应用返回真实 IP。不同域名交给
 
 ### 版本
 
-版本号写在 [`Egern.yaml` 首行](Egern.yaml#L1)，同时显示在 App 策略组列表末尾的 `Loondrift x.y · amilokane` 组里。每次更新小数位加 1，满 10 进位（2.9 之后是 3.0）。
+版本号写在 [`Egern.yaml` 首行](Egern.yaml#L1)。每次更新小数位加 1，满 10 进位（2.9 之后是 3.0）。
 
 ## Loon 配置
 

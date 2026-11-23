@@ -1,5 +1,5 @@
-# Loondrift for Egern · 2.2 · amilokane
-# 版本规则：每次更新小数位加 1，满 10 进位（2.9 之后是 3.0）。策略组列表末尾的版本显示组要同步改名。
+# Loondrift for Egern · 2.3 · amilokane
+# 版本规则：每次更新小数位加 1，满 10 进位（2.9 之后是 3.0）。
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
 ipv6: false
@@ -333,12 +333,6 @@ policy_groups:
       policies: [Airport]
       flatten: true
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Static.png
-
-  # 仅用于在 App 的策略组列表里显示版本和作者，没有规则引用它。
-  - select:
-      name: Loondrift 2.2 · amilokane
-      policies: [DIRECT]
-      icon: info.circle
 
 rules:
   # DNS 上游：海外 DoH 走代理，国内 DoH 直连。

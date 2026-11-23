@@ -1,4 +1,5 @@
-# Loondrift for Egern · 1.0.21
+# Loondrift for Egern · 2.2 · amilokane
+# 版本规则：每次更新小数位加 1，满 10 进位（2.9 之后是 3.0）。策略组列表末尾的版本显示组要同步改名。
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
 ipv6: false
@@ -27,14 +28,14 @@ dns:
     PUBLIC-DOH:
       - https://1.1.1.1/dns-query
       - https://8.8.8.8/dns-query
+    CN-DOH:
+      - https://223.5.5.5/dns-query
+      - https://1.12.12.12/dns-query
   forward:
     # 在选出可用代理之前，也能用当前网络的 DNS 解析测速域名。
     - domain:
         match: cp.cloudflare.com
         value: system
-    - proxy_rule_set:
-        match: https://raw.githubusercontent.com/RiverFlowsInUUU/RFU-Rules/main/surge-ads.list
-        value: reject
     - domain_suffix:
         match: local
         value: system
@@ -47,12 +48,54 @@ dns:
     - domain_suffix:
         match: home.arpa
         value: system
+    # 默认走代理的服务先命中海外 DoH，避免其中个别域名被下面的国内集合抢先匹配。顺序与分流规则一致。
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/YouTube/YouTube.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/TikTok/TikTok.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/openai.list
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Google/Google.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/GitHub/GitHub.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Facebook/Facebook.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Netflix/Netflix.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Spotify/Spotify.yaml
+        value: PUBLIC-DOH
+    # 国内域名（分流规则「国内综合」的域名部分）和默认直连的 Apple、Microsoft、PayPal 交给国内 DoH。
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/ChinaMax/ChinaMax_Domain.yaml
+        value: CN-DOH
+    - domain_suffix:
+        match: cn
+        value: CN-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Apple/Apple_Domain.yaml
+        value: CN-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Microsoft/Microsoft.yaml
+        value: CN-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/PayPal/PayPal.yaml
+        value: CN-DOH
     - domain_wildcard:
         match: '*'
         value: PUBLIC-DOH
   proxy_nameservers:
     # 建立代理连接时直连加密 DNS，保留多个可用入口。
     - https://223.5.5.5/dns-query
+    - https://1.12.12.12/dns-query
     - https://1.1.1.1/dns-query
     - https://8.8.8.8/dns-query
 
@@ -66,81 +109,92 @@ policy_groups:
       hidden: true
       urls: []
       update_interval: 86400
+      # 流量、到期、官网等提示条目在这里统一排除，后面的分组只写各自的匹配条件。
+      filter: |-
+        (?ix)^
+        (?!.*(?:
+            剩余 | 到期 | 过期 | 有效期 | 重置
+          | 套餐 | 订阅 | 续费 | 公告
+          | 官网 | 官方网站 | https?://
+          | 流量 \s* (?: [:：] | \d (?! [\d.]* \s* (?: 倍 | [x*×✕✖⨯⨉] ) ) )
+          | \b (?: traffic | remaining\s+(?:traffic|data) | expir(?:e|es|ed|y|ation) | reset ) \b
+        ))
+        .+$
       icon: tray.and.arrow.down
 
   - select:
       name: Proxy
-      policies: [Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Manual, Other Regions]
+      policies: [Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Proxy.png
 
   - select:
       name: AI
-      policies: [United States, Proxy, Smart, Manual, Japan, Singapore, Taiwan, Hong Kong, Other Regions, DIRECT]
+      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/OpenAI.png
 
   - select:
       name: Google
-      policies: [Proxy, Smart, Manual, United States, Japan, Singapore, Taiwan, Hong Kong, Other Regions, DIRECT]
+      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Google.png
 
   - select:
       name: YouTube
-      policies: [Proxy, Smart, Manual, United States, Japan, Singapore, Taiwan, Hong Kong, Other Regions, DIRECT]
+      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/YouTube.png
 
   - select:
       name: GitHub
-      policies: [Proxy, Smart, Manual, United States, Japan, Singapore, Taiwan, Hong Kong, Other Regions, DIRECT]
+      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/GitHub.png
 
   - select:
       name: Telegram
-      policies: [Proxy, Smart, Manual, United States, Japan, Singapore, Taiwan, Hong Kong, Other Regions, DIRECT]
+      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Telegram.png
 
   - select:
       name: Meta
-      policies: [Proxy, Smart, Manual, United States, Japan, Singapore, Taiwan, Hong Kong, Other Regions, DIRECT]
+      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Meta.png
 
   - select:
       name: Twitter
-      policies: [Proxy, Smart, Manual, United States, Japan, Singapore, Taiwan, Hong Kong, Other Regions, DIRECT]
+      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Twitter.png
 
   - select:
       name: TikTok
-      policies: [Proxy, Smart, Manual, United States, Japan, Singapore, Taiwan, Hong Kong, Other Regions, DIRECT]
+      policies: [Japan, Proxy, Smart, Hong Kong, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/TikTok.png
 
   - select:
       name: Netflix
-      policies: [Proxy, Smart, Manual, United States, Japan, Singapore, Taiwan, Hong Kong, Other Regions, DIRECT]
+      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Netflix.png
 
   - select:
       name: Spotify
-      policies: [Proxy, Smart, Manual, United States, Japan, Singapore, Taiwan, Hong Kong, Other Regions, DIRECT]
+      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Spotify.png
 
   - select:
       name: Apple
-      policies: [DIRECT, Proxy, Smart, Manual, United States, Japan, Singapore, Taiwan, Hong Kong, Other Regions]
+      policies: [DIRECT, Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Apple.png
 
   - select:
       name: Microsoft
-      policies: [DIRECT, Proxy, Smart, Manual, United States, Japan, Singapore, Taiwan, Hong Kong, Other Regions]
+      policies: [DIRECT, Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Microsoft.png
 
   - select:
       name: PayPal
-      policies: [Proxy, Smart, Manual, United States, Japan, Singapore, Taiwan, Hong Kong, Other Regions, DIRECT]
+      policies: [DIRECT, Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/PayPal.png
 
   - select:
       name: IP Location
-      policies: [Proxy, Manual, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, DIRECT]
+      policies: [Proxy, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: mappin.circle.fill
 
   - select:
@@ -153,13 +207,29 @@ policy_groups:
       policies: [Proxy, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Stack.png
 
+  # 低于 1 倍的节点优先，未标倍率的其次，标有 1 倍及以上或「高倍」的排最后。
+  # 系数乘在节点评分上，越小越优先；先判断高倍率，再判断低倍率，未命中的按 1 计。
+  # 独立的 0.5 兼容旧命名，v0.8 等版本号忽略。名称带「直连」的节点不参与自动选择。
+  - smart:
+      name: Smart
+      policies: [Manual]
+      flatten: true
+      filter: '(?i)^(?!.*(?:直连|DIRECT)).+$'
+      priorities:
+        '(?i)高倍|(?<![a-z\d.])(?:[x*×✕✖⨯⨉]|倍率\s*[:：]?)\s*0*[1-9]\d*(?:\.\d+)?(?![a-z\d.])|(?<![\d.])0*[1-9]\d*(?:\.\d+)?(?!\s+(?:[x*×✕✖⨯⨉]|倍率)\s*[:：]?\s*\d)\s*(?:[x*×✕✖⨯⨉]|倍率(?!\s*[:：])|倍(?!率))(?![a-z\d.])': 10
+        '(?i)(?<![a-z\d.])x?0\.\d*[1-9]\d*(?![a-z\d.])|(?<![\d.])0\.\d*[1-9]\d*\s*(?:[x*×✕✖⨯⨉]|倍率|倍)(?![a-z\d.])': 0.1
+      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Auto.png
+
   - auto_test:
       name: Hong Kong
       policies: [Manual]
       flatten: true
-      filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?=.*(?:🇭🇰|香港|(?<![A-Za-z])HKG?(?![A-Za-z])|(?<![A-Za-z])hong\s*kong(?![A-Za-z]))).+$'
-      interval: 300
-      timeout: 10
+      filter: |-
+        (?ix)
+          🇭🇰 | 香港 | [沪深广京杭莞苏粤]港
+        | (?<![a-z]) (?: HKG? | hong\s*kong ) (?![a-z])
+      interval: 600
+      timeout: 5
       tolerance: 50
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/HongKong.png
 
@@ -167,9 +237,15 @@ policy_groups:
       name: Japan
       policies: [Manual]
       flatten: true
-      filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?=.*(?:🇯🇵|日本|東京|东京|大阪|京都|(?<![A-Za-z])(?:JPN?|japan|tokyo|osaka|kyoto|NRT|HND|KIX|FUK|NGO|OSA|CTS|SDJ|OKA)(?![A-Za-z]))).+$'
-      interval: 300
-      timeout: 10
+      filter: |-
+        (?ix)
+          🇯🇵 | 日本 | 東京 | 东京 | 大阪 | 京都 | [沪深广京杭莞苏粤]日
+        | (?<![a-z]) (?:
+              JPN? | japan | tokyo | osaka | kyoto
+            | NRT | HND | KIX | FUK | NGO | OSA | CTS | SDJ | OKA
+          ) (?![a-z])
+      interval: 600
+      timeout: 5
       tolerance: 50
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Japan.png
 
@@ -177,9 +253,21 @@ policy_groups:
       name: United States
       policies: [Manual]
       flatten: true
-      filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?=.*(?:🇺🇸|美国|美國|纽约|紐約|洛杉矶|洛杉磯|旧金山|舊金山|芝加哥|休斯顿|休斯頓|迈阿密|邁阿密|西雅图|西雅圖|波士顿|波士頓|华盛顿|華盛頓|拉斯维加斯|拉斯維加斯|圣何塞|聖何塞|圣地亚哥|聖地亞哥|(?<![A-Za-z])(?:USA?|united\s*states|los\s*angeles|new\s*york|san\s*francisco|chicago|houston|miami|seattle|boston|washington|las\s*vegas|san\s*jose|san\s*diego|LAX|SJC|SFO|SEA|ORD|JFK|DFW|IAD|PHX|ATL|BOS|MIA|EWR|LGA|IAH|HOU|DEN|OAK|ONT|SNA|LAS|PDX|DAL|SAN|SLC|MSP)(?![A-Za-z]))).+$'
-      interval: 300
-      timeout: 10
+      filter: |-
+        (?ix)
+          🇺🇸 | 美国 | 美國 | 美西 | 美东 | 美東 | [沪深广京杭莞苏粤]美
+        | 纽约 | 紐約 | 洛杉矶 | 洛杉磯 | 旧金山 | 舊金山 | 芝加哥 | 休斯顿 | 休斯頓
+        | 迈阿密 | 邁阿密 | 西雅图 | 西雅圖 | 波士顿 | 波士頓 | 华盛顿 | 華盛頓
+        | 拉斯维加斯 | 拉斯維加斯 | 圣何塞 | 聖何塞 | 圣地亚哥 | 聖地亞哥
+        | (?<![a-z]) (?:
+              USA? | united\s*states
+            | los\s*angeles | new\s*york | san\s*francisco | chicago | houston | miami
+            | seattle | boston | washington | las\s*vegas | san\s*jose | san\s*diego | denver
+            | LAX | SJC | SFO | ORD | JFK | DFW | IAD | PHX | ATL | BOS | MIA | EWR
+            | LGA | IAH | HOU | OAK | SNA | PDX | DAL | SLC | MSP
+          ) (?![a-z])
+      interval: 600
+      timeout: 5
       tolerance: 50
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/America.png
 
@@ -187,9 +275,12 @@ policy_groups:
       name: Singapore
       policies: [Manual]
       flatten: true
-      filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?=.*(?:🇸🇬|新加坡|狮城|獅城|(?<![A-Za-z])(?:SGP?|SIN)(?![A-Za-z])|(?<![A-Za-z])singapore(?![A-Za-z]))).+$'
-      interval: 300
-      timeout: 10
+      filter: |-
+        (?ix)
+          🇸🇬 | 新加坡 | 狮城 | 獅城 | [沪深广京杭莞苏粤]新
+        | (?<![a-z]) (?: SGP? | SIN | singapore ) (?![a-z])
+      interval: 600
+      timeout: 5
       tolerance: 50
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Singapore.png
 
@@ -197,104 +288,60 @@ policy_groups:
       name: Taiwan
       policies: [Manual]
       flatten: true
-      filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?=.*(?:🇹🇼|台湾|台灣|台北|高雄|(?<![A-Za-z])(?:TWN?|TPE)(?![A-Za-z])|(?<![A-Za-z])taiwan(?![A-Za-z]))).+$'
-      interval: 300
-      timeout: 10
+      filter: |-
+        (?ix)
+          🇹🇼 | 台湾 | 台灣 | 臺灣 | 台北 | 臺北 | 高雄 | [沪深广京杭莞苏粤]台
+        | (?<![a-z]) (?: TWN? | TPE | taiwan ) (?![a-z])
+      interval: 600
+      timeout: 5
       tolerance: 50
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Taiwan.png
-
-  - select:
-      name: Manual
-      policies: [Airport]
-      flatten: true
-      filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://)).+$'
-      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Static.png
 
   - select:
       name: Other Regions
       policies: [Manual]
       flatten: true
-      filter: '(?i)^(?!.*(?:剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))(?!.*(?:🇭🇰|香港|(?<![A-Za-z])HKG?(?![A-Za-z])|(?<![A-Za-z])hong\s*kong(?![A-Za-z])|🇯🇵|日本|東京|东京|大阪|京都|(?<![A-Za-z])(?:JPN?|japan|tokyo|osaka|kyoto|NRT|HND|KIX|FUK|NGO|OSA|CTS|SDJ|OKA)(?![A-Za-z])|🇺🇸|美国|美國|纽约|紐約|洛杉矶|洛杉磯|旧金山|舊金山|芝加哥|休斯顿|休斯頓|迈阿密|邁阿密|西雅图|西雅圖|波士顿|波士頓|华盛顿|華盛頓|拉斯维加斯|拉斯維加斯|圣何塞|聖何塞|圣地亚哥|聖地亞哥|(?<![A-Za-z])(?:USA?|united\s*states|los\s*angeles|new\s*york|san\s*francisco|chicago|houston|miami|seattle|boston|washington|las\s*vegas|san\s*jose|san\s*diego|LAX|SJC|SFO|SEA|ORD|JFK|DFW|IAD|PHX|ATL|BOS|MIA|EWR|LGA|IAH|HOU|DEN|OAK|ONT|SNA|LAS|PDX|DAL|SAN|SLC|MSP)(?![A-Za-z])|🇸🇬|新加坡|狮城|獅城|(?<![A-Za-z])(?:SGP?|SIN)(?![A-Za-z])|(?<![A-Za-z])singapore(?![A-Za-z])|🇹🇼|台湾|台灣|台北|高雄|(?<![A-Za-z])(?:TWN?|TPE)(?![A-Za-z])|(?<![A-Za-z])taiwan(?![A-Za-z]))).+$'
+      filter: |-
+        (?ix)^
+        (?!.*(?:
+            🇭🇰 | 香港 | [沪深广京杭莞苏粤][港日美新台]
+          | 🇯🇵 | 日本 | 東京 | 东京 | 大阪 | 京都
+          | 🇺🇸 | 美国 | 美國 | 美西 | 美东 | 美東
+          | 纽约 | 紐約 | 洛杉矶 | 洛杉磯 | 旧金山 | 舊金山 | 芝加哥 | 休斯顿 | 休斯頓
+          | 迈阿密 | 邁阿密 | 西雅图 | 西雅圖 | 波士顿 | 波士頓 | 华盛顿 | 華盛頓
+          | 拉斯维加斯 | 拉斯維加斯 | 圣何塞 | 聖何塞 | 圣地亚哥 | 聖地亞哥
+          | 🇸🇬 | 新加坡 | 狮城 | 獅城
+          | 🇹🇼 | 台湾 | 台灣 | 臺灣 | 台北 | 臺北 | 高雄
+          | (?<![a-z]) (?:
+                HKG? | hong\s*kong
+              | JPN? | japan | tokyo | osaka | kyoto
+              | NRT | HND | KIX | FUK | NGO | OSA | CTS | SDJ | OKA
+              | USA? | united\s*states
+              | los\s*angeles | new\s*york | san\s*francisco | chicago | houston | miami
+              | seattle | boston | washington | las\s*vegas | san\s*jose | san\s*diego | denver
+              | LAX | SJC | SFO | ORD | JFK | DFW | IAD | PHX | ATL | BOS | MIA | EWR
+              | LGA | IAH | HOU | OAK | SNA | PDX | DAL | SLC | MSP
+              | SGP? | SIN | singapore
+              | TWN? | TPE | taiwan
+            ) (?![a-z])
+        ))
+        .+$
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/WorldMap.png
 
-  - fallback:
-      name: Smart
-      policies: [Low Mult., Auto, High Mult.]
-      interval: 300
-      timeout: 10
-      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Auto.png
-
-  # 优先低于 1 倍的节点，其次是未标倍率的节点，最后尝试标有 1 倍及以上的节点。
-  # 优先识别明确的高倍率。独立的 0.5 兼容旧命名，v0.8 等版本号忽略。
-  - auto_test:
-      name: Low Mult.
-      policies: [Manual]
+  - select:
+      name: Manual
+      policies: [Airport]
       flatten: true
-      filter: |-
-        (?ix)^
-        (?!.*(?:直连|DIRECT|订阅|续费|剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))
-        (?!.*(?:
-          高倍
-          | (?<![a-z\d.]) (?:[x*×✕✖⨯⨉]|倍率\s*[:：]?) \s* 0*[1-9]\d*(?:\.\d+)? (?![a-z\d.])
-          | (?<![\d.]) 0*[1-9]\d*(?:\.\d+)?
-            (?!\s+(?:[x*×✕✖⨯⨉]|倍率)\s*[:：]?\s*\d)
-            \s* (?:[x*×✕✖⨯⨉]|倍率(?!\s*[:：])|倍(?!率)) (?![a-z\d.])
-        ))
-        (?=.*(?:
-          (?<![a-z\d.]) x?0\.\d*[1-9]\d* (?![a-z\d.])
-          | (?<![\d.]) 0\.\d*[1-9]\d* \s* (?:[x*×✕✖⨯⨉]|倍率|倍) (?![a-z\d.])
-        ))
-        .+$
-      interval: 300
-      timeout: 10
-      tolerance: 50
-      hidden: true
+      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Static.png
 
-  - auto_test:
-      name: Auto
-      policies: [Manual]
-      flatten: true
-      filter: |-
-        (?ix)^
-        (?!.*(?:直连|DIRECT|订阅|续费|剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))
-        (?!.*(?:
-          高倍
-          | (?<![a-z\d.]) (?:[x*×✕✖⨯⨉]|倍率\s*[:：]?) \s* 0*[1-9]\d*(?:\.\d+)? (?![a-z\d.])
-          | (?<![\d.]) 0*[1-9]\d*(?:\.\d+)?
-            (?!\s+(?:[x*×✕✖⨯⨉]|倍率)\s*[:：]?\s*\d)
-            \s* (?:[x*×✕✖⨯⨉]|倍率(?!\s*[:：])|倍(?!率)) (?![a-z\d.])
-        ))
-        (?!.*(?:
-          (?<![a-z\d.]) x?0\.\d*[1-9]\d* (?![a-z\d.])
-          | (?<![\d.]) 0\.\d*[1-9]\d* \s* (?:[x*×✕✖⨯⨉]|倍率|倍) (?![a-z\d.])
-        ))
-        .+$
-      interval: 300
-      timeout: 10
-      tolerance: 50
-      hidden: true
-
-  - auto_test:
-      name: High Mult.
-      policies: [Manual]
-      flatten: true
-      filter: |-
-        (?ix)^
-        (?!.*(?:直连|DIRECT|订阅|续费|剩余|到期|过期|有效期|套餐|官网|官方网站|重置|公告|流量\s*(?:[:：]|\d)|\b(?:traffic|remaining\s+(?:traffic|data)|expir(?:e|es|ed|y|ation)|reset)\b|https?://))
-        (?=.*(?:
-          高倍
-          | (?<![a-z\d.]) (?:[x*×✕✖⨯⨉]|倍率\s*[:：]?) \s* 0*[1-9]\d*(?:\.\d+)? (?![a-z\d.])
-          | (?<![\d.]) 0*[1-9]\d*(?:\.\d+)?
-            (?!\s+(?:[x*×✕✖⨯⨉]|倍率)\s*[:：]?\s*\d)
-            \s* (?:[x*×✕✖⨯⨉]|倍率(?!\s*[:：])|倍(?!率)) (?![a-z\d.])
-        ))
-        .+$
-      interval: 300
-      timeout: 10
-      tolerance: 50
-      hidden: true
+  # 仅用于在 App 的策略组列表里显示版本和作者，没有规则引用它。
+  - select:
+      name: Loondrift 2.2 · amilokane
+      policies: [DIRECT]
+      icon: info.circle
 
 rules:
+  # DNS 上游：海外 DoH 走代理，国内 DoH 直连。
   - ip_cidr:
       match: 1.1.1.1/32
       policy: Proxy
@@ -302,6 +349,14 @@ rules:
   - ip_cidr:
       match: 8.8.8.8/32
       policy: Proxy
+      no_resolve: true
+  - ip_cidr:
+      match: 223.5.5.5/32
+      policy: DIRECT
+      no_resolve: true
+  - ip_cidr:
+      match: 1.12.12.12/32
+      policy: DIRECT
       no_resolve: true
   # 局域网与广告
   - domain_suffix:
@@ -321,6 +376,11 @@ rules:
   - rule_set:
       name: 广告拦截
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/AdvertisingLite/AdvertisingLite_All_No_Resolve.yaml
+      policy: AdBlock
+      update_interval: 86400
+  - rule_set:
+      name: 广告拦截补充
+      match: https://raw.githubusercontent.com/RiverFlowsInUUU/RFU-Rules/main/surge-ads.list
       policy: AdBlock
       update_interval: 86400
 
@@ -363,6 +423,21 @@ rules:
   - rule_set:
       name: Claude
       match: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/anthropic.list
+      policy: AI
+      update_interval: 86400
+  - rule_set:
+      name: Perplexity
+      match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/perplexity.yaml
+      policy: AI
+      update_interval: 86400
+  - rule_set:
+      name: Grok
+      match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/x-ai.yaml
+      policy: AI
+      update_interval: 86400
+  - rule_set:
+      name: Cursor
+      match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/cursor.yaml
       policy: AI
       update_interval: 86400
   - rule_set:
@@ -427,6 +502,10 @@ rules:
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Global/Global_All_No_Resolve.yaml
       policy: Proxy
       update_interval: 86400
+  # 规则集未收录、但 IP 位于中国大陆的目标直连。
+  - geoip:
+      match: CN
+      policy: DIRECT
 
   - default:
       policy: Final
@@ -459,8 +538,8 @@ modules:
   - name: 闲鱼
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partX/XianYu.yaml
     enabled: true
-  - name: YouTube
-    url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partY/YouTube.yaml
+  - name: YouTube 增强
+    url: https://raw.githubusercontent.com/IBL3ND/module/refs/heads/main/Egern-YouTube.yaml
     enabled: true
   - name: 淘宝
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partT/Taobao.yaml

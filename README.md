@@ -8,32 +8,124 @@
 </p>
 
 <p align="center">
-  <a href="#egern-导入"><strong>Egern 导入</strong></a>　·　<a href="#快速导入">Loon 导入</a>　·　<a href="#常用策略">常用策略</a>
+  <a href="#egern-配置"><strong>Egern 配置</strong></a>　·　<a href="#loon-配置"><strong>Loon 配置</strong></a>　·　<a href="#ip-归属地规则">IP 归属地规则</a>　·　<a href="#上游来源">上游来源</a>
 </p>
 
-## Egern 导入
+## 仓库内容
 
-1. 在 Egern 首页从 URL 导入 [Egern.yaml](https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml)。
-2. 添加自己的 Egern 兼容订阅，默认归入隐藏的 `Airport` 组。可在 `Manual` 中查看和选择节点，地区组和 `Smart` 会从这份订阅筛选节点。
-3. `Proxy` 初始使用 `Smart`。ChatGPT、Claude 和 Google AI 共用 `AI` 策略组，默认选 `United States`。国内 AI 直连。如果订阅没有美国节点，可以在 `AI` 里切到 `Proxy`。
+| 文件 | 适用 App | 说明 |
+| :--- | :--- | :--- |
+| [`Egern.yaml`](Egern.yaml) | Egern | 主配置，已内置下面的 Egern 模块。 |
+| [`Loon.conf`](Loon.conf) | Loon | 主配置。 |
+| [`plugin/ip-attribution.yaml`](plugin/ip-attribution.yaml) | Egern | IP 归属地规则模块。 |
+| [`plugin/ip-attribution.plugin`](plugin/ip-attribution.plugin) | Loon | IP 归属地规则插件，需要单独导入。 |
 
-Egern 接管传统 DNS，向应用返回真实 IP。命中 RFU 广告名单的域名返回空响应。测速域名 `cp.cloudflare.com` 和本地域名（`.local`、`.lan`、`.localdomain`、`.home.arpa`）交给系统 DNS。其他域名统一经 `Proxy` 向 Cloudflare 或 Google DoH 查询。国内网站的连接仍按服务规则直连，域名解析依赖可用代理，国内 CDN 选点可能改变。
+两份主配置各自维护，版本号写在各自文件的首行。
 
-建立代理连接时，Egern 会直连 `proxy_nameservers` 中的加密上游，解析商在这条路径上可以看到接入网络的公网 IP。阿里、Cloudflare 和 Google 的 DoH 均使用 IP 地址，正常连接它们无需明文查询上游主机名。若这些上游均无法直连，使用域名地址的机场节点可能无法连接。[Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
+## Egern 配置
 
-地区组支持按机场三字码识别节点，例如 LAX（美国）、HND（日本）、SIN（新加坡）和 TPE（台湾）。Other Regions 列出未命中五个地区筛选条件的节点，由用户手动选择。香港、日本、美国、新加坡、台湾五个地区组和倍率组每 300 秒测试一次到 `https://cp.cloudflare.com/generate_204` 的延迟，切换容差为 50 毫秒。自动测速和 `Smart` 健康检查的单次超时为 10 秒。
+### 导入
 
-`Smart` 优先使用低于 1 倍的节点，其次是未标倍率的节点，最后使用标注为 1 倍及以上的节点。筛选时优先识别明确的高倍率标记，例如 `日本 v0.8 2x` 按 2 倍归组。单独标出的 `0.5` 仍按低倍率归组。要手动测试或固定使用某个节点，可在 `Manual` 组中操作。[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups)
+在 Egern 首页选择从 URL 导入，粘贴下面的地址。
 
-配置中的 15 个模块默认全部启用。前四项为广告平台拦截器、HTTPDNS拦截器、可莉广告过滤器和 Apple天气增强。第五项 Loon&Surge 2 Egern 可让可莉插件中心等站点的安装链接在 Egern 中打开。其后是微博等九个 App 单项和 IP Attribution。`AdBlock` 控制主配置中的广告分流规则，DNS 层的 RFU 广告名单独立生效。[Egern Hub 模块目录](https://egern.pages.dev/) · [可莉插件中心](https://hub.kelee.one/)
+```text
+https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml
+```
 
-需要 HTTPS 重写时，在 iOS 安装并信任自己的 Egern 证书，解密范围使用模块声明的域名。`IP Attribution` 模块使用 `IP Location` 策略组，初始跟随 `Proxy`。[Egern 模块文档](https://egernapp.com/zh-CN/docs/configuration/modules)
+1. 添加自己的 Egern 兼容订阅，它会归入隐藏的 `Airport` 组。订阅里的流量、到期、官网等提示条目会被自动排除。
+2. 在 `Manual` 里查看和选择全部节点。`Proxy` 初始使用 `Smart`，多数服务组初始跟随 `Proxy`。
+3. 要让 App 去广告模块生效，在 iOS 安装并信任自己的 Egern 证书。
 
-Egern 版的服务与广告规则由 Repcz 从 blackmatrix7 转换为原生 YAML。国内 AI 和 Google AI 使用 VPSDance 的规则，ChatGPT、Claude 和 Threads 使用 MetaCubeX 的远程列表。[Repcz/EgernRules](https://github.com/Repcz/EgernRules) · [VPSDance/ai-proxy-rules](https://github.com/VPSDance/ai-proxy-rules/tree/main/rules/egern) · [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat/tree/meta/geo/geosite/classical)
+> [!NOTE]
+> `Smart` 使用 Egern 的 `smart` 策略组类型。导入报错或 `Smart` 里没有节点时，先把 Egern 升级到支持该类型的版本。
 
-每次更新 Egern 配置时，同步递增[文件首行的版本号](Egern.yaml#L1)。
+### 策略组
 
-## 快速导入
+| 策略组 | 初始选择 | 说明 |
+| :--- | :--- | :--- |
+| **Proxy** | `Smart` | 主出口。Google、YouTube、GitHub、Telegram、Meta、Twitter、Netflix、Spotify 初始跟随它。 |
+| **AI** | `Proxy` | ChatGPT、Claude、Google AI、Perplexity、Grok 和 Cursor。DeepSeek、豆包等国内 AI 按规则直连。 |
+| **TikTok** | `Japan` | TikTok 在香港节点不可用，初始避开香港。 |
+| **Apple · Microsoft · PayPal** | `DIRECT` | 需要走节点时在组内切换。 |
+| **IP Location** | `Proxy` | 内置的 IP 归属地模块使用这个出口。 |
+| **AdBlock** | `REJECT` | 控制两份广告域名规则，切到 `DIRECT` 即放行。 |
+| **Final** | `Proxy` | 处理没有命中任何规则的请求。 |
+
+各组的可选项顺序相同，依次是 `Smart`、香港、日本、美国、新加坡、台湾、`Other Regions`、`Manual`。规则集没有收录、但 IP 位于中国大陆的目标会直连。
+
+> [!TIP]
+> ChatGPT 和 Claude 在香港节点不可用。`Smart` 选中香港节点时，把 `AI` 切到其他地区或 `Manual`。
+
+<details>
+<summary><strong>地区组与节点识别</strong></summary>
+
+- 香港、日本、美国、新加坡、台湾五个地区组按节点名称筛选，各自选用延迟最低的节点。
+- 地区组每 600 秒向 `https://cp.cloudflare.com/generate_204` 测速一次，单次超时 5 秒，延迟差超过 50 毫秒才切换。
+- 名称识别支持旗帜、中英文地名、机场三字码（如 LAX、HND、SIN、TPE）和中转线路缩写（如 沪港、深日、广美）。
+- `Other Regions` 列出没有命中五个地区的节点，由用户手动选择。
+
+</details>
+
+<details>
+<summary><strong>Smart 如何选节点</strong></summary>
+
+`Smart` 综合延迟、抖动和成功率给节点打分，再按名称里的倍率加权。系数越小越优先。
+
+| 节点名称 | 系数 | 效果 |
+| :--- | :---: | :--- |
+| 标有低于 1 倍，例如 `0.5x`、`x0.8`、`0.2倍` | 0.1 | 优先使用 |
+| 没有标倍率 | 1 | 正常参与 |
+| 标有 1 倍及以上或「高倍」，例如 `2x`、`倍率:1.5` | 10 | 尽量不用 |
+
+- 名称里同时有多个数字时先认高倍率，例如 `日本 v0.8 2x` 按 2 倍处理。单独标出的 `0.5` 按低倍率处理。
+- 名称带「直连」或 `DIRECT` 的节点不参与自动选择，可以在 `Manual` 或地区组里手动选。
+
+[Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups)
+
+</details>
+
+<details>
+<summary><strong>DNS 解析方式</strong></summary>
+
+Egern 接管系统的 DNS 查询，向应用返回真实 IP。不同域名交给不同的上游。
+
+| 域名 | 上游 | 连接方式 |
+| :--- | :--- | :--- |
+| 国内域名、`.cn`、Apple、Microsoft、PayPal | 阿里和腾讯 DoH（`223.5.5.5`、`1.12.12.12`） | 直连 |
+| 其他域名 | Cloudflare 和 Google DoH（`1.1.1.1`、`8.8.8.8`） | 经 `Proxy` |
+| `cp.cloudflare.com` 和本地域名（`.local`、`.lan`、`.localdomain`、`.home.arpa`） | 系统 DNS | 当前网络 |
+
+- YouTube、TikTok、ChatGPT、Google、GitHub、Facebook、Netflix、Spotify 的规则集排在国内集合之前，这些服务的域名始终走海外 DoH。
+- 把 `Apple`、`Microsoft` 或 `PayPal` 切到节点后，它们的域名仍由国内 DoH 解析。
+- 海外域名的解析依赖可用代理。
+- 建立代理连接时，Egern 直连 `proxy_nameservers` 里的加密上游解析节点域名，解析商在这条路径上可以看到接入网络的公网 IP。上游全部使用 IP 地址，不需要明文查询上游主机名。
+
+[Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
+
+</details>
+
+### 模块
+
+配置内置 15 个模块，默认全部启用。
+
+| 类别 | 模块 |
+| :--- | :--- |
+| 广告与 DNS | 广告平台拦截器、HTTPDNS拦截器、可莉广告过滤器 |
+| App 去广告 | 微博、哔哩哔哩、斗鱼直播、闲鱼、YouTube 增强、淘宝、拼多多、网易云音乐、懂球帝 |
+| 增强与工具 | Apple天气增强、Loon&Surge 2 Egern、IP Attribution |
+
+- 需要 HTTPS 重写的模块，解密范围使用模块自己声明的域名。
+- Loon&Surge 2 Egern 让可莉插件中心等站点的安装链接在 Egern 中打开。
+
+[Egern 模块文档](https://egernapp.com/zh-CN/docs/configuration/modules)
+
+### 版本
+
+版本号写在 [`Egern.yaml` 首行](Egern.yaml#L1)，同时显示在 App 策略组列表末尾的 `Loondrift x.y · amilokane` 组里。每次更新小数位加 1，满 10 进位（2.9 之后是 3.0）。
+
+## Loon 配置
+
+### 导入
 
 在 iPhone 的 Loon 中打开「配置」，选择从 URL 导入，粘贴下面的地址。
 
@@ -47,13 +139,13 @@ https://raw.githubusercontent.com/amilokane/Loondrift/main/Loon.conf
 > [!TIP]
 > **从旧配置更新**　关闭「全覆盖更新」以保留手机上的节点、订阅和证书。更新后刷新远程规则和插件，再确认常用服务的策略选择。
 
-## 常用策略
+### 策略组
 
-| 策略 | 初始行为 |
+| 策略组 | 初始行为 |
 | :--- | :--- |
 | **默认代理** | Google、YouTube、Telegram 等服务初始跟随此组。 |
 | **AI** | ChatGPT、Claude、Gemini 等海外 AI 初始走「美国」。DeepSeek、豆包等国内 AI 按规则直连。 |
-| **Apple 与 Microsoft** | 初始直连，可在各自的策略组切换。 |
+| **Apple · Microsoft** | 初始直连，可在各自的策略组切换。 |
 | **漏网之鱼** | 处理未命中规则的请求，初始走「默认代理」。 |
 
 <details>
@@ -61,11 +153,10 @@ https://raw.githubusercontent.com/amilokane/Loondrift/main/Loon.conf
 
 - **按地区选**　香港、日本、美国、新加坡和台湾根据节点名称筛选，并在组内故障转移。德国、英国、韩国等线路可在「其他节点」查找。
 - **按测速选**　「自动优选」按测速选择线路，并过滤已识别的高倍率节点。
+- **按倍率选**　「低倍率节点」和「高倍率节点」按节点名称里的倍率标记分组，组内手动选择。
 - **固定单个节点**　先在服务组里选「手动选择」，再进入该组指定节点。引用「手动选择」的服务会共用当前节点。
 
 </details>
-
-## 设备设置
 
 <details>
 <summary><strong>启用 App 内去广告</strong></summary>
@@ -81,11 +172,43 @@ https://raw.githubusercontent.com/amilokane/Loondrift/main/Loon.conf
 
 </details>
 
+### 版本
+
+版本号写在 [`Loon.conf` 首行](Loon.conf#L1)。
+
+## IP 归属地规则
+
+把微博、哔哩哔哩、知乎、抖音、小红书等三十多个 App 里与 IP 属地相关的请求交给指定策略。规则共 242 条，其中 193 条走指定策略，28 条直连，21 条拒绝。规则转换自 [SunsetMkt/anti-ip-attribution](https://github.com/SunsetMkt/anti-ip-attribution)，并加入了本地补充。
+
+| App | 文件 | 使用方式 |
+| :--- | :--- | :--- |
+| Egern | [`plugin/ip-attribution.yaml`](plugin/ip-attribution.yaml) | `Egern.yaml` 已内置。出口由 `IP Location` 策略组决定，初始跟随 `Proxy`。 |
+| Loon | [`plugin/ip-attribution.plugin`](plugin/ip-attribution.plugin) | `Loon.conf` 没有内置，需要单独导入。导入后把 `PROXY` 绑定到想用的策略。 |
+
+Loon 插件地址：
+
+```text
+https://raw.githubusercontent.com/amilokane/Loondrift/main/plugin/ip-attribution.plugin
+```
+
+在其他 Egern 配置里单独使用模块时，导入下面的地址。模块参数 `PROXY` 是这些规则使用的策略名称，默认值为 `Proxy`。
+
+```text
+https://raw.githubusercontent.com/amilokane/Loondrift/main/plugin/ip-attribution.yaml
+```
+
 ## 上游来源
 
-- 国内外域名、服务分流和广告拦截。[blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Loon)
-- 国内和海外 AI。[VPSDance/ai-proxy-rules](https://github.com/VPSDance/ai-proxy-rules/tree/main/rules/loon)
-- Threads。[MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat/blob/meta/geo/geosite/classical/threads.list)
-- 去广告和增强插件。[可莉的插件中心](https://hub.kelee.one/)
+| 内容 | 来源 |
+| :--- | :--- |
+| Egern 服务与广告规则 | [Repcz/EgernRules](https://github.com/Repcz/EgernRules)，由 blackmatrix7 的规则转换为原生 YAML |
+| Loon 服务与广告规则 | [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Loon) |
+| 国内与海外 AI 规则 | [VPSDance/ai-proxy-rules](https://github.com/VPSDance/ai-proxy-rules) |
+| ChatGPT、Claude、Threads 列表 | [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat/tree/meta/geo/geosite/classical) |
+| Egern 广告域名补充 | [RiverFlowsInUUU/RFU-Rules](https://github.com/RiverFlowsInUUU/RFU-Rules) |
+| Egern 模块 | [Egern Hub 模块目录](https://egern.pages.dev/)、[可莉插件中心](https://hub.kelee.one/)、[IBL3ND/module](https://github.com/IBL3ND/module) |
+| Loon 插件 | [可莉插件中心](https://hub.kelee.one/) |
+| IP 归属地规则 | [SunsetMkt/anti-ip-attribution](https://github.com/SunsetMkt/anti-ip-attribution) |
+| 策略组图标 | [AIsouler/MyClash](https://github.com/AIsouler/MyClash) |
 
-配置版本见 [Loon.conf 首行](Loon.conf#L1)。
+`plugin/` 目录下的规则沿用上游的 GPL-3.0 许可，完整文本见 [`plugin/LICENSE`](plugin/LICENSE)。

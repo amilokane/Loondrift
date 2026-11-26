@@ -1,4 +1,4 @@
-# Loondrift for Egern · 2.5 · amilokane
+# Loondrift for Egern · 2.6 · amilokane
 # 版本规则：每次更新小数位加 1，满 10 进位（2.9 之后是 3.0）。
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
@@ -16,7 +16,14 @@ compat_route: false
 include_all_networks: true
 include_apns: false
 real_ip_domains:
-  - '*'
+  - '*.lan'
+  - '*.local'
+  - '*.localdomain'
+  - '*.home.arpa'
+  - '*.push.apple.com'
+  - '*.msftconnecttest.com'
+  - '*.msftncsi.com'
+  - '*.stun.*'
 hijack_dns:
   - '*'
 dns:
@@ -32,10 +39,7 @@ dns:
       - https://223.5.5.5/dns-query
       - https://1.12.12.12/dns-query
   forward:
-    # 在选出可用代理之前，也能用当前网络的 DNS 解析测速域名。
-    - domain:
-        match: cp.cloudflare.com
-        value: system
+    # 局域网域名交给当前网络系统 DNS。
     - domain_suffix:
         match: local
         value: system
@@ -48,32 +52,7 @@ dns:
     - domain_suffix:
         match: home.arpa
         value: system
-    # 默认走代理的服务先命中海外 DoH，避免其中个别域名被下面的国内集合抢先匹配。顺序与分流规则一致。
-    - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/YouTube/YouTube.yaml
-        value: PUBLIC-DOH
-    - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/TikTok/TikTok.yaml
-        value: PUBLIC-DOH
-    - proxy_rule_set:
-        match: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/openai.list
-        value: PUBLIC-DOH
-    - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Google/Google.yaml
-        value: PUBLIC-DOH
-    - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/GitHub/GitHub.yaml
-        value: PUBLIC-DOH
-    - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Facebook/Facebook.yaml
-        value: PUBLIC-DOH
-    - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Netflix/Netflix.yaml
-        value: PUBLIC-DOH
-    - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Spotify/Spotify.yaml
-        value: PUBLIC-DOH
-    # 直连的国内 AI、国内域名（分流规则「国内综合」的域名部分）和默认直连的 Apple、Microsoft、PayPal 交给国内 DoH。
+    # Fake-IP 模式下海外代理流量直接由远端节点解析；此处负责直连及 geoip 兜底查询。
     - proxy_rule_set:
         match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/cn.yaml
         value: CN-DOH
@@ -96,11 +75,9 @@ dns:
         match: '*'
         value: PUBLIC-DOH
   proxy_nameservers:
-    # 建立代理连接时直连加密 DNS，保留多个可用入口。
+    # 仅用于直连解析代理节点自身域名，只保留国内加密 DNS 避免直连海外 DoH 超时或入口解析偏远。
     - https://223.5.5.5/dns-query
     - https://1.12.12.12/dns-query
-    - https://1.1.1.1/dns-query
-    - https://8.8.8.8/dns-query
 
 default_subscription_group: Airport
 default_proxy_group: Manual
@@ -117,8 +94,8 @@ policy_groups:
         (?ix)^
         (?!.*(?:
             剩余 | 到期 | 过期 | 有效期 | 重置
-          | 套餐 | 订阅 | 续费 | 公告
-          | 官网 | 官方网站 | https?://
+          | 套餐 | 订阅 | 续费 | 公告 | 通知
+          | 官网 | 官方网站 | 网址 | 群组 | 频道 | 失联 | 维护 | 故障 | 客服 | https?://
           | 流量 \s* (?: [:：] | \d (?! [\d.]* \s* (?: 倍 | [x*×✕✖⨯⨉] ) ) )
           | \b (?: traffic | remaining\s+(?:traffic|data) | expir(?:e|es|ed|y|ation) | reset ) \b
         ))
@@ -210,8 +187,8 @@ policy_groups:
       policies: [Proxy, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Stack.png
 
-  # 低于 1 倍的节点优先，未标倍率的其次，标有 1 倍及以上或「高倍」的排最后。
-  # 系数乘在节点评分上，越小越优先；先判断高倍率，再判断低倍率，未命中的按 1 计。
+  # 低于 1 倍（含 0 倍）的节点优先，1 倍与未标倍率的其次，高于 1 倍或「高倍」的排最后。
+  # 系数乘在节点评分上，越小越优先；高倍（>1）与低倍（<1）正则互斥，未命中的按 1 计。
   # 独立的 0.5 兼容旧命名，v0.8 等版本号忽略。名称带「直连」的节点不参与自动选择。
   - smart:
       name: Smart
@@ -219,8 +196,8 @@ policy_groups:
       flatten: true
       filter: '(?i)^(?!.*(?:直连|DIRECT)).+$'
       priorities:
-        '(?i)高倍|(?<![a-z\d.])(?:[x*×✕✖⨯⨉]|倍率\s*[:：]?)\s*0*[1-9]\d*(?:\.\d+)?(?![a-z\d.])|(?<![\d.])0*[1-9]\d*(?:\.\d+)?(?!\s+(?:[x*×✕✖⨯⨉]|倍率)\s*[:：]?\s*\d)\s*(?:[x*×✕✖⨯⨉]|倍率(?!\s*[:：])|倍(?!率))(?![a-z\d.])': 10
-        '(?i)(?<![a-z\d.])x?0\.\d*[1-9]\d*(?![a-z\d.])|(?<![\d.])0\.\d*[1-9]\d*\s*(?:[x*×✕✖⨯⨉]|倍率|倍)(?![a-z\d.])': 0.1
+        '(?i)高倍|(?<![a-z\d.])(?:[x*×✕✖⨯⨉]|倍率\s*[:：]?)\s*(?:0*(?:[2-9]\d*|1\d+)(?:\.\d+)?|0*1\.0*[1-9]\d*)(?![a-z\d.])|(?<![\d.])(?:0*(?:[2-9]\d*|1\d+)(?:\.\d+)?|0*1\.0*[1-9]\d*)(?!\s+(?:[x*×✕✖⨯⨉]|倍率)\s*[:：]?\s*\d)\s*(?:[x*×✕✖⨯⨉]|倍率(?!\s*[:：])|倍(?!率))(?![a-z\d.])': 10
+        '(?i)(?<![a-z\d.])(?:(?:[x*×✕✖⨯⨉]|倍率\s*[:：]?)\s*(?:0*(?:0\.\d+)|0+(?!\.\d))|0\.\d*[1-9]\d*)(?![a-z\d.])|(?<![\d.])(?:0*(?:0\.\d+)|0+(?!\.\d))(?!\s+(?:[x*×✕✖⨯⨉]|倍率)\s*[:：]?\s*\d)\s*(?:[x*×✕✖⨯⨉]|倍率(?!\s*[:：])|倍(?!率))(?![a-z\d.])': 0.1
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Auto.png
 
   - auto_test:
@@ -372,6 +349,7 @@ rules:
       name: 私有网络
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Lan/Lan.yaml
       policy: DIRECT
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: 广告拦截
@@ -382,6 +360,7 @@ rules:
       name: 广告拦截补充
       match: https://raw.githubusercontent.com/RiverFlowsInUUU/RFU-Rules/main/surge-ads.list
       policy: AdBlock
+      no_resolve: true
       update_interval: 86400
 
   # 服务分流
@@ -389,66 +368,49 @@ rules:
       name: Threads
       match: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/threads.list
       policy: Meta
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: FCM
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/GoogleFCM/GoogleFCM.yaml
       policy: Google
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: YouTube
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/YouTube/YouTube.yaml
       policy: YouTube
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: TikTok
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/TikTok/TikTok.yaml
       policy: TikTok
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: 国内AI
       match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/cn.yaml
       policy: DIRECT
+      no_resolve: true
       update_interval: 86400
   - rule_set:
-      name: Google AI
-      match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/google-ai.yaml
+      name: 海外AI
+      match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/global.yaml
       policy: AI
-      update_interval: 86400
-  - rule_set:
-      name: ChatGPT
-      match: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/openai.list
-      policy: AI
-      update_interval: 86400
-  - rule_set:
-      name: Claude
-      match: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/anthropic.list
-      policy: AI
-      update_interval: 86400
-  - rule_set:
-      name: Perplexity
-      match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/perplexity.yaml
-      policy: AI
-      update_interval: 86400
-  - rule_set:
-      name: Grok
-      match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/x-ai.yaml
-      policy: AI
-      update_interval: 86400
-  - rule_set:
-      name: Cursor
-      match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/cursor.yaml
-      policy: AI
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Google
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Google/Google.yaml
       policy: Google
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: GitHub
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/GitHub/GitHub.yaml
       policy: GitHub
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Apple
@@ -459,36 +421,55 @@ rules:
       name: Telegram
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Telegram/Telegram.yaml
       policy: Telegram
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Twitter
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Twitter/Twitter.yaml
       policy: Twitter
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Facebook
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Facebook/Facebook.yaml
       policy: Meta
+      no_resolve: true
+      update_interval: 86400
+  - rule_set:
+      name: Instagram
+      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Instagram/Instagram.yaml
+      policy: Meta
+      no_resolve: true
+      update_interval: 86400
+  - rule_set:
+      name: WhatsApp
+      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Whatsapp/Whatsapp.yaml
+      policy: Meta
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Netflix
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Netflix/Netflix.yaml
       policy: Netflix
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Spotify
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Spotify/Spotify.yaml
       policy: Spotify
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: PayPal
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/PayPal/PayPal.yaml
       policy: PayPal
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Microsoft
       match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Microsoft/Microsoft.yaml
       policy: Microsoft
+      no_resolve: true
       update_interval: 86400
 
   # 国内、海外与兜底
@@ -511,36 +492,58 @@ rules:
       policy: Final
 
 modules:
+  - name: 去广告合集
+    url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/blockAds.yaml
+    enabled: true
+    update_interval: 86400
   - name: 微博去广告&净化
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/weibo.yaml
     enabled: true
+    update_interval: 86400
   - name: 哔哩哔哩
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partB/bilibili.yaml
     enabled: true
+    update_interval: 86400
+  - name: 百度贴吧
+    url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partB/BaiduTieba.yaml
+    enabled: true
+    update_interval: 86400
   - name: 斗鱼直播
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partD/DouyuLive.yaml
     enabled: true
+    update_interval: 86400
   - name: 闲鱼
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partX/XianYu.yaml
     enabled: true
+    update_interval: 86400
   - name: YouTube 增强
-    url: https://raw.githubusercontent.com/IBL3ND/module/refs/heads/main/Egern-YouTube.yaml
+    url: https://raw.githubusercontent.com/IBL3ND/module/main/Egern-YouTube.yaml
     enabled: true
+    update_interval: 86400
   - name: 淘宝
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partT/Taobao.yaml
     enabled: true
+    update_interval: 86400
   - name: 拼多多
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partP/Pinduoduo.yaml
     enabled: true
+    update_interval: 86400
   - name: 网易云音乐
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partW/NetEaseCloudMusic.yaml
     enabled: true
+    update_interval: 86400
   - name: 懂球帝
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/split/partD/AllFootball.yaml
     enabled: true
+    update_interval: 86400
+  - name: iRingo WeatherKit
+    url: https://egern.pages.dev/modules/NSRingo/WeatherKit/modules/iRingo.WeatherKit.Rewrite.yaml
+    enabled: true
+    update_interval: 86400
 
   - name: IP Attribution
     url: https://raw.githubusercontent.com/amilokane/Loondrift/main/plugin/ip-attribution.yaml
     enabled: true
+    update_interval: 86400
     compat_arguments:
       PROXY: IP Location

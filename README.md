@@ -44,7 +44,7 @@ https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml
 | 策略组 | 初始选择 | 说明 |
 | :--- | :--- | :--- |
 | **Proxy** | `Smart` | 主出口。Google、YouTube、GitHub、Telegram、Meta、Twitter、Netflix、Spotify 初始跟随它。 |
-| **AI** | `Proxy` | ChatGPT、Claude、Google AI、Perplexity、Grok 和 Cursor。DeepSeek、豆包等国内 AI 按规则直连。 |
+| **AI** | `Proxy` | 聚合海外 AI 规则（涵盖 ChatGPT、Claude、Google AI、Perplexity、Grok、Cursor、Copilot 等）。DeepSeek、豆包等国内 AI 按规则直连。 |
 | **TikTok** | `Japan` | TikTok 在香港节点不可用，初始避开香港。 |
 | **Apple · Microsoft · PayPal** | `DIRECT` | 需要走节点时在组内切换。 |
 | **IP Location** | `Proxy` | 内置的 IP 归属地模块使用这个出口。 |
@@ -73,11 +73,11 @@ https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml
 
 | 节点名称 | 系数 | 效果 |
 | :--- | :---: | :--- |
-| 标有低于 1 倍，例如 `0.5x`、`x0.8`、`0.2倍` | 0.1 | 优先使用 |
-| 没有标倍率 | 1 | 正常参与 |
-| 标有 1 倍及以上或「高倍」，例如 `2x`、`倍率:1.5` | 10 | 尽量不用 |
+| 标有低于 1 倍（含 0 倍），例如 `0.5x`、`x0.8`、`0.2倍`、`0x` | 0.1 | 优先使用 |
+| 标有 1 倍或没有标倍率，例如 `1x`、`1.0倍` | 1 | 正常参与 |
+| 标有高于 1 倍或「高倍」，例如 `2x`、`倍率:1.5` | 10 | 尽量不用 |
 
-- 名称里同时有多个数字时先认高倍率，例如 `日本 v0.8 2x` 按 2 倍处理。单独标出的 `0.5` 按低倍率处理。
+- 高倍率（`>1`）与低倍率（`<1`）正则互斥；单独标出的 `0.5` 按低倍率处理，`v0.8` 等版本号忽略。
 - 名称带「直连」或 `DIRECT` 的节点不参与自动选择，可以在 `Manual` 或地区组里手动选。
 
 [Egern 策略组文档](https://egernapp.com/zh-CN/docs/configuration/policy_groups)
@@ -87,18 +87,16 @@ https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml
 <details>
 <summary><strong>DNS 解析方式</strong></summary>
 
-Egern 接管系统的 DNS 查询，向应用返回真实 IP。不同域名交给不同的上游。
+Egern 默认使用 Fake-IP，仅对局域网、`*.push.apple.com`、`*.msftconnecttest.com`、`*.msftncsi.com`、`*.stun.*` 返回真实 IP。带 `no_resolve` 的海外规则流量直接交由目标代理节点在远端解析；直连流量与 `geoip: CN` 兜底查询按下列上游分流：
 
 | 域名 | 上游 | 连接方式 |
 | :--- | :--- | :--- |
 | 国内域名、国内 AI、`.cn`、Apple、Microsoft、PayPal | 阿里和腾讯 DoH（`223.5.5.5`、`1.12.12.12`） | 直连 |
-| 其他域名 | Cloudflare 和 Google DoH（`1.1.1.1`、`8.8.8.8`） | 经 `Proxy` |
-| `cp.cloudflare.com` 和本地域名（`.local`、`.lan`、`.localdomain`、`.home.arpa`） | 系统 DNS | 当前网络 |
+| 其他未知域名（兜底查询） | Cloudflare 和 Google DoH（`1.1.1.1`、`8.8.8.8`） | 经 `Proxy` |
+| 本地域名（`.local`、`.lan`、`.localdomain`、`.home.arpa`） | 系统 DNS | 当前网络 |
 
-- YouTube、TikTok、ChatGPT、Google、GitHub、Facebook、Netflix、Spotify 的规则集排在国内集合之前，这些服务的域名始终走海外 DoH。
-- 把 `Apple`、`Microsoft` 或 `PayPal` 切到节点后，它们的域名仍由国内 DoH 解析。
-- 海外域名的解析依赖可用代理。
-- 建立代理连接时，Egern 直连 `proxy_nameservers` 里的加密上游解析节点域名，解析商在这条路径上可以看到接入网络的公网 IP。上游全部使用 IP 地址，不需要明文查询上游主机名。
+- 建立代理连接时，Egern 仅通过 `proxy_nameservers` 里的国内加密 DoH（`223.5.5.5`、`1.12.12.12`）直连解析代理节点自身域名，避免直连海外 DoH 超时或入口解析偏远。
+- 上游全部使用 IP 地址，不需要明文查询上游主机名。
 
 [Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
 
@@ -106,12 +104,12 @@ Egern 接管系统的 DNS 查询，向应用返回真实 IP。不同域名交给
 
 ### 模块
 
-配置内置 10 个模块，默认全部启用。
+配置内置 13 个模块，默认全部启用，更新周期统一为 24 小时。
 
 | 类别 | 模块 |
 | :--- | :--- |
-| App 去广告 | 微博、哔哩哔哩、斗鱼直播、闲鱼、YouTube 增强、淘宝、拼多多、网易云音乐、懂球帝 |
-| 工具 | IP Attribution |
+| App 去广告与增强 | 去广告合集、微博、哔哩哔哩、百度贴吧、斗鱼直播、闲鱼、YouTube 增强、淘宝、拼多多、网易云音乐、懂球帝 |
+| 工具 | iRingo WeatherKit、IP Attribution |
 
 - 需要 HTTPS 重写的模块，解密范围使用模块自己声明的域名。
 
@@ -202,7 +200,7 @@ https://raw.githubusercontent.com/amilokane/Loondrift/main/plugin/ip-attribution
 | Egern 服务与广告规则 | [Repcz/EgernRules](https://github.com/Repcz/EgernRules)，由 blackmatrix7 的规则转换为原生 YAML |
 | Loon 服务与广告规则 | [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Loon) |
 | 国内与海外 AI 规则 | [VPSDance/ai-proxy-rules](https://github.com/VPSDance/ai-proxy-rules) |
-| ChatGPT、Claude、Threads 列表 | [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat/tree/meta/geo/geosite/classical) |
+| Threads 列表 | [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat/tree/meta/geo/geosite/classical) |
 | Egern 广告域名补充 | [RiverFlowsInUUU/RFU-Rules](https://github.com/RiverFlowsInUUU/RFU-Rules) |
 | Egern 模块 | [Egern Hub 模块目录](https://egern.pages.dev/)、[IBL3ND/module](https://github.com/IBL3ND/module) |
 | Loon 插件 | [可莉插件中心](https://hub.kelee.one/) |

@@ -91,7 +91,7 @@ Egern 接管系统的 DNS 查询，向应用返回真实 IP。不同域名交给
 
 | 域名 | 上游 | 连接方式 |
 | :--- | :--- | :--- |
-| 国内域名、`.cn`、Apple、Microsoft、PayPal | 阿里和腾讯 DoH（`223.5.5.5`、`1.12.12.12`） | 直连 |
+| 国内域名、国内 AI、`.cn`、Apple、Microsoft、PayPal | 阿里和腾讯 DoH（`223.5.5.5`、`1.12.12.12`） | 直连 |
 | 其他域名 | Cloudflare 和 Google DoH（`1.1.1.1`、`8.8.8.8`） | 经 `Proxy` |
 | `cp.cloudflare.com` 和本地域名（`.local`、`.lan`、`.localdomain`、`.home.arpa`） | 系统 DNS | 当前网络 |
 
@@ -106,16 +106,14 @@ Egern 接管系统的 DNS 查询，向应用返回真实 IP。不同域名交给
 
 ### 模块
 
-配置内置 15 个模块，默认全部启用。
+配置内置 10 个模块，默认全部启用。
 
 | 类别 | 模块 |
 | :--- | :--- |
-| 广告与 DNS | 广告平台拦截器、HTTPDNS拦截器、可莉广告过滤器 |
 | App 去广告 | 微博、哔哩哔哩、斗鱼直播、闲鱼、YouTube 增强、淘宝、拼多多、网易云音乐、懂球帝 |
-| 增强与工具 | Apple天气增强、Loon&Surge 2 Egern、IP Attribution |
+| 工具 | IP Attribution |
 
 - 需要 HTTPS 重写的模块，解密范围使用模块自己声明的域名。
-- Loon&Surge 2 Egern 让可莉插件中心等站点的安装链接在 Egern 中打开。
 
 [Egern 模块文档](https://egernapp.com/zh-CN/docs/configuration/modules)
 
@@ -206,7 +204,7 @@ https://raw.githubusercontent.com/amilokane/Loondrift/main/plugin/ip-attribution
 | 国内与海外 AI 规则 | [VPSDance/ai-proxy-rules](https://github.com/VPSDance/ai-proxy-rules) |
 | ChatGPT、Claude、Threads 列表 | [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat/tree/meta/geo/geosite/classical) |
 | Egern 广告域名补充 | [RiverFlowsInUUU/RFU-Rules](https://github.com/RiverFlowsInUUU/RFU-Rules) |
-| Egern 模块 | [Egern Hub 模块目录](https://egern.pages.dev/)、[可莉插件中心](https://hub.kelee.one/)、[IBL3ND/module](https://github.com/IBL3ND/module) |
+| Egern 模块 | [Egern Hub 模块目录](https://egern.pages.dev/)、[IBL3ND/module](https://github.com/IBL3ND/module) |
 | Loon 插件 | [可莉插件中心](https://hub.kelee.one/) |
 | IP 归属地规则 | [SunsetMkt/anti-ip-attribution](https://github.com/SunsetMkt/anti-ip-attribution) |
 | 策略组图标 | [AIsouler/MyClash](https://github.com/AIsouler/MyClash) |

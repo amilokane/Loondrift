@@ -1,4 +1,4 @@
-# Loondrift for Egern · 2.3 · amilokane
+# Loondrift for Egern · 2.5 · amilokane
 # 版本规则：每次更新小数位加 1，满 10 进位（2.9 之后是 3.0）。
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
@@ -11,7 +11,7 @@ hide_vpn_icon: false
 geoip_db_url: https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb
 asn_db_url: https://github.com/P3TERX/GeoLite.mmdb/releases/latest/download/GeoLite2-ASN.mmdb
 proxy_latency_test_url: https://cp.cloudflare.com/generate_204
-direct_latency_test_url: http://www.qq.com
+direct_latency_test_url: http://connectivitycheck.platform.hicloud.com/generate_204
 compat_route: false
 include_all_networks: true
 include_apns: false
@@ -22,8 +22,8 @@ hijack_dns:
 dns:
   # 下列 DoH 均使用 IP 地址，正常连接这些上游无需引导查询。
   bootstrap:
-    - 1.1.1.1
-    - 8.8.8.8
+    - system
+    - 223.5.5.5
   upstreams:
     PUBLIC-DOH:
       - https://1.1.1.1/dns-query
@@ -73,7 +73,10 @@ dns:
     - proxy_rule_set:
         match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Spotify/Spotify.yaml
         value: PUBLIC-DOH
-    # 国内域名（分流规则「国内综合」的域名部分）和默认直连的 Apple、Microsoft、PayPal 交给国内 DoH。
+    # 直连的国内 AI、国内域名（分流规则「国内综合」的域名部分）和默认直连的 Apple、Microsoft、PayPal 交给国内 DoH。
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/cn.yaml
+        value: CN-DOH
     - proxy_rule_set:
         match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/ChinaMax/ChinaMax_Domain.yaml
         value: CN-DOH
@@ -360,6 +363,9 @@ rules:
       match: lan
       policy: DIRECT
   - domain_suffix:
+      match: localdomain
+      policy: DIRECT
+  - domain_suffix:
       match: home.arpa
       policy: DIRECT
   - rule_set:
@@ -505,21 +511,6 @@ rules:
       policy: Final
 
 modules:
-  - name: 广告平台拦截器
-    url: https://kelee.one/Tool/Loon/Lpx/BlockAdvertisers.lpx
-    enabled: true
-  - name: HTTPDNS拦截器
-    url: https://kelee.one/Tool/Loon/Lpx/Block_HTTPDNS.lpx
-    enabled: true
-  - name: 可莉广告过滤器
-    url: https://kelee.one/Tool/Loon/Lpx/Remove_ads_by_keli.lpx
-    enabled: true
-  - name: Apple天气增强
-    url: https://kelee.one/Tool/Loon/Lpx/AppleWeatherEnhancer.lpx
-    enabled: true
-  - name: Loon&Surge 2 Egern
-    url: https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Egern/modules/pluginhub.yaml
-    enabled: true
   - name: 微博去广告&净化
     url: https://egern.pages.dev/modules/fmz200/wool_scripts/Loon/plugin/weibo.yaml
     enabled: true

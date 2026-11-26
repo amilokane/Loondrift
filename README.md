@@ -87,7 +87,7 @@ https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml
 <details>
 <summary><strong>DNS 解析方式</strong></summary>
 
-Egern 默认使用 Fake-IP，仅对局域网、`*.push.apple.com`、`*.msftconnecttest.com`、`*.msftncsi.com`、`*.stun.*` 返回真实 IP。带 `no_resolve` 的海外规则流量直接交由目标代理节点在远端解析；直连流量与 `geoip: CN` 兜底查询按下列上游分流：
+Egern 默认使用 Fake-IP，仅对局域网、`*.push.apple.com`、`*.msftconnecttest.com`、`*.msftncsi.com`、`*.stun.*` 返回真实 IP。所有海外及未收录的未知域名均带 `no_resolve`，直接交由目标代理节点在远端解析（不在本地触发 DNS 查询，避免泄露）；直连与本地域名按下列上游分流：
 
 | 域名 | 上游 | 连接方式 |
 | :--- | :--- | :--- |

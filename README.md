@@ -87,15 +87,16 @@ https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml
 <details>
 <summary><strong>DNS 解析方式</strong></summary>
 
-Egern 默认使用 Fake-IP，仅对局域网、`*.push.apple.com`、`*.msftconnecttest.com`、`*.msftncsi.com`、`*.stun.*` 返回真实 IP。所有海外及未收录的未知域名均带 `no_resolve`，直接交由目标代理节点在远端解析（不在本地触发 DNS 查询，避免泄露）；直连与本地域名按下列上游分流：
+Egern 接管系统的 DNS 查询，向应用返回真实 IP，不同域名交给对应的加密上游：
 
 | 域名 | 上游 | 连接方式 |
 | :--- | :--- | :--- |
 | 国内域名、国内 AI、`.cn`、Apple、Microsoft、PayPal | 阿里和腾讯 DoH（`223.5.5.5`、`1.12.12.12`） | 直连 |
-| 其他未知域名（兜底查询） | Cloudflare 和 Google DoH（`1.1.1.1`、`8.8.8.8`） | 经 `Proxy` |
+| 海外服务与其他未知域名 | Cloudflare 和 Google DoH（`1.1.1.1`、`8.8.8.8`） | 经 `Proxy` |
 | 本地域名（`.local`、`.lan`、`.localdomain`、`.home.arpa`） | 系统 DNS | 当前网络 |
 
-- 建立代理连接时，Egern 仅通过 `proxy_nameservers` 里的国内加密 DoH（`223.5.5.5`、`1.12.12.12`）直连解析代理节点自身域名，避免直连海外 DoH 超时或入口解析偏远。
+- YouTube、TikTok、海外 AI、Google、GitHub、Telegram、Twitter、Meta（Facebook/Instagram/WhatsApp）、Netflix、Spotify 的规则集排在国内集合之前，这些服务的域名始终走海外 DoH。
+- 建立代理连接时，Egern 仅通过 `proxy_nameservers` 里的国内加密 DoH（`223.5.5.5`、`1.12.12.12`）直连解析代理节点自身域名。
 - 上游全部使用 IP 地址，不需要明文查询上游主机名。
 
 [Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)

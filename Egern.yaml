@@ -1,4 +1,4 @@
-# Loondrift for Egern · 2.7 · amilokane
+# Loondrift for Egern · 2.8 · amilokane
 # 版本规则：每次更新小数位加 1，满 10 进位（2.9 之后是 3.0）。
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
@@ -16,14 +16,7 @@ compat_route: false
 include_all_networks: true
 include_apns: false
 real_ip_domains:
-  - '*.lan'
-  - '*.local'
-  - '*.localdomain'
-  - '*.home.arpa'
-  - '*.push.apple.com'
-  - '*.msftconnecttest.com'
-  - '*.msftncsi.com'
-  - '*.stun.*'
+  - '*'
 hijack_dns:
   - '*'
 dns:
@@ -52,7 +45,44 @@ dns:
     - domain_suffix:
         match: home.arpa
         value: system
-    # Fake-IP 模式下海外代理流量直接由远端节点解析；此处负责直连及 geoip 兜底查询。
+    # 默认走代理的服务先命中海外 DoH，避免其中个别域名被下面的国内集合抢先匹配。顺序与分流规则一致。
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/YouTube/YouTube.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/TikTok/TikTok.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/global.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Google/Google.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/GitHub/GitHub.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Telegram/Telegram.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Twitter/Twitter.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Facebook/Facebook.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Instagram/Instagram.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Whatsapp/Whatsapp.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Netflix/Netflix.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Spotify/Spotify.yaml
+        value: PUBLIC-DOH
+    # 直连的国内 AI、国内域名（分流规则「国内综合」的域名部分）和默认直连的 Apple、Microsoft、PayPal 交给国内 DoH。
     - proxy_rule_set:
         match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/cn.yaml
         value: CN-DOH

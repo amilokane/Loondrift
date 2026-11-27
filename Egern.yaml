@@ -1,4 +1,4 @@
-# Loondrift for Egern · 3.0 · amilokane
+# Loondrift for Egern · 3.1 · amilokane
 # 版本规则：每次更新小数位加 1，满 10 进位（2.9 之后是 3.0）。
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
@@ -155,14 +155,14 @@ policy_groups:
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/OpenAI.png
 
   - select:
-      name: Google
+      name: YouTube
       policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
-      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Google.png
+      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/YouTube.png
 
   - select:
-      name: GitHub
-      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
-      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/GitHub.png
+      name: TikTok
+      policies: [Japan, Proxy, Smart, Hong Kong, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
+      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/TikTok.png
 
   - select:
       name: Telegram
@@ -185,16 +185,6 @@ policy_groups:
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Meta.png
 
   - select:
-      name: YouTube
-      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
-      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/YouTube.png
-
-  - select:
-      name: TikTok
-      policies: [Japan, Proxy, Smart, Hong Kong, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
-      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/TikTok.png
-
-  - select:
       name: Netflix
       policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Netflix.png
@@ -203,6 +193,16 @@ policy_groups:
       name: Spotify
       policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Spotify.png
+
+  - select:
+      name: Google
+      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
+      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Google.png
+
+  - select:
+      name: GitHub
+      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
+      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/GitHub.png
 
   - select:
       name: Apple
@@ -218,6 +218,16 @@ policy_groups:
       name: PayPal
       policies: [DIRECT, Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/PayPal.png
+
+  - select:
+      name: AdBlock
+      policies: [REJECT, DIRECT]
+      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/AdBlock.png
+
+  - select:
+      name: Final
+      policies: [Proxy, DIRECT]
+      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Stack.png
 
   # 低于 1 倍（含 0 倍）的节点优先，1 倍与未标倍率的其次，高于 1 倍或「高倍」的排最后。
   # 系数乘在节点评分上，越小越优先；高倍（>1）与低倍（<1）正则互斥，未命中的按 1 计。
@@ -339,16 +349,6 @@ policy_groups:
         ))
         .+$
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/WorldMap.png
-
-  - select:
-      name: AdBlock
-      policies: [REJECT, DIRECT]
-      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/AdBlock.png
-
-  - select:
-      name: Final
-      policies: [Proxy, DIRECT]
-      icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Stack.png
 
 rules:
   # DNS 上游：海外 DoH 走代理，国内 DoH 直连。

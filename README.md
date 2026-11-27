@@ -9,7 +9,7 @@
 <p>国内站点直连 · 海外 AI 独立聚合 · 全量 Real-IP 零泄露 DNS · 开箱即用去广告</p>
 
 <p>
-  <a href="Egern.yaml"><img src="https://img.shields.io/badge/Egern-v3.0-0d9488?style=flat-square&logo=apple&logoColor=white" alt="Egern v3.0" /></a>
+  <a href="Egern.yaml"><img src="https://img.shields.io/badge/Egern-v3.1-0d9488?style=flat-square&logo=apple&logoColor=white" alt="Egern v3.1" /></a>
   <a href="Loon.conf"><img src="https://img.shields.io/badge/Loon-v1.0.3-0284c7?style=flat-square&logo=safari&logoColor=white" alt="Loon v1.0.3" /></a>
   <a href="plugin/ip-attribution.yaml"><img src="https://img.shields.io/badge/IP%20Attribution-242%20Rules-10b981?style=flat-square" alt="IP Attribution" /></a>
   <a href="plugin/LICENSE"><img src="https://img.shields.io/badge/Plugin%20License-GPL--3.0-1e293b?style=flat-square" alt="GPL-3.0" /></a>
@@ -64,7 +64,7 @@
 
 | 适用 App | 文件 | 版本 | 远程导入地址 |
 | :--- | :--- | :---: | :--- |
-| **Egern** | [`Egern.yaml`](Egern.yaml) | `3.0` | `https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml` |
+| **Egern** | [`Egern.yaml`](Egern.yaml) | `3.1` | `https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml` |
 | **Loon** | [`Loon.conf`](Loon.conf) | `1.0.3` | `https://raw.githubusercontent.com/amilokane/Loondrift/main/Loon.conf` |
 | **Egern 模块** | [`plugin/ip-attribution.yaml`](plugin/ip-attribution.yaml) | — | 已内置于 `Egern.yaml`，无需单独导入 |
 | **Loon 插件** | [`plugin/ip-attribution.plugin`](plugin/ip-attribution.plugin) | — | `https://raw.githubusercontent.com/amilokane/Loondrift/main/plugin/ip-attribution.plugin` |
@@ -111,12 +111,11 @@ flowchart LR
 | 层级 | 策略组 | 默认策略 | 用途说明 |
 | :--- | :--- | :---: | :--- |
 | **总控入口** | `Proxy` · `Manual` | `Smart` / 全节点 | 主代理出口与全部节点手动选择，置顶方便随时切换 |
-| **AI 与工具** | `AI` · `Google` · `GitHub` | `Proxy` | 聚合海外 AI（ChatGPT / Claude / Gemini / Grok / Cursor / Copilot 等），国内 AI 自动直连 |
-| **社交与通讯** | `Telegram` · `Discord` · `Twitter` · `Meta` | `Proxy` | `Meta` 完整覆盖 Threads、Facebook、Instagram、WhatsApp |
-| **影音流媒体** | `YouTube` · `TikTok` · `Netflix` · `Spotify` | `Proxy`（TikTok 默认 `Japan`） | TikTok 初始避开香港节点，其余默认跟随主出口 |
+| **高频常切** | `AI` · `YouTube` · `TikTok` · `Telegram` · `Discord` | `Proxy`（TikTok 默认 `Japan`） | 聚合海外 AI（ChatGPT / Claude / Gemini / Grok / Cursor / Copilot 等）与日常高频切区服务 |
+| **常用海外** | `Twitter` · `Meta` · `Netflix` · `Spotify` · `Google` · `GitHub` | `Proxy` | `Meta` 完整覆盖 Threads、Facebook、Instagram、WhatsApp |
 | **默认直连** | `Apple` · `Microsoft` · `PayPal` | `DIRECT` | 默认直连降低延迟与风控，需要时可在组内切代理 |
-| **地区与选优** | `Smart` · `Hong Kong` · `Japan` · `United States` · `Singapore` · `Taiwan` · `Other Regions` | 自动优选 / 手动 | 五大主力地区自动测速（600s / 5s / 50ms 容差），其余地区归入 `Other Regions` |
-| **系统与兜底** | `AdBlock` · `Final` | `REJECT` / `Proxy` | 广告总开关与未命中兜底出口 |
+| **系统兜底** | `AdBlock` · `Final` | `REJECT` / `Proxy` | 广告总开关与未命中兜底出口 |
+| **节点池** | `Smart` · `Hong Kong` · `Japan` · `United States` · `Singapore` · `Taiwan` · `Other Regions` | 自动优选 / 手动 | 五大主力地区自动测速（600s / 5s / 50ms 容差），其余地区归入 `Other Regions` |
 
 > [!TIP]
 > ChatGPT、Claude、Gemini 等主流海外 AI 屏蔽香港节点。当 `Smart` 选中香港时，直接在 `AI` 组切到 `Manual` 或美/日/新/台地区组即可。

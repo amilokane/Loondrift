@@ -1,4 +1,4 @@
-# Loondrift for Egern · 2.9 · amilokane
+# Loondrift for Egern · 3.0 · amilokane
 # 版本规则：每次更新小数位加 1，满 10 进位（2.9 之后是 3.0）。
 # 在 Egern 内将自己的订阅添加到「Airport」。
 
@@ -47,40 +47,46 @@ dns:
         value: system
     # 默认走代理的服务先命中海外 DoH，避免其中个别域名被下面的国内集合抢先匹配。顺序与分流规则一致。
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/YouTube/YouTube.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Threads.yaml
         value: PUBLIC-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/TikTok/TikTok.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/YouTube.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/TikTok.yaml
         value: PUBLIC-DOH
     - proxy_rule_set:
         match: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/egern/global.yaml
         value: PUBLIC-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Google/Google.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Google.yaml
         value: PUBLIC-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/GitHub/GitHub.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/GitHub.yaml
         value: PUBLIC-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Telegram/Telegram.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Telegram.yaml
         value: PUBLIC-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Twitter/Twitter.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Discord.yaml
         value: PUBLIC-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Facebook/Facebook.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Twitter.yaml
         value: PUBLIC-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Instagram/Instagram.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Facebook.yaml
         value: PUBLIC-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Whatsapp/Whatsapp.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Instagram.yaml
         value: PUBLIC-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Netflix/Netflix.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Whatsapp.yaml
         value: PUBLIC-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Spotify/Spotify.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Netflix.yaml
+        value: PUBLIC-DOH
+    - proxy_rule_set:
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Spotify.yaml
         value: PUBLIC-DOH
     # 直连的国内 AI、国内域名（分流规则「国内综合」的域名部分）和默认直连的 Apple、Microsoft、PayPal 交给国内 DoH。
     - proxy_rule_set:
@@ -93,13 +99,13 @@ dns:
         match: cn
         value: CN-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Apple/Apple_Domain.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Apple.yaml
         value: CN-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Microsoft/Microsoft.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Microsoft.yaml
         value: CN-DOH
     - proxy_rule_set:
-        match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/PayPal/PayPal.yaml
+        match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/PayPal.yaml
         value: CN-DOH
     - domain_wildcard:
         match: '*'
@@ -162,6 +168,11 @@ policy_groups:
       name: Telegram
       policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Telegram.png
+
+  - select:
+      name: Discord
+      policies: [Proxy, Smart, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
+      icon: https://icons.jennie.win/apps/Discord.png
 
   - select:
       name: Twitter
@@ -339,11 +350,6 @@ policy_groups:
       policies: [Proxy, DIRECT]
       icon: https://raw.githubusercontent.com/AIsouler/MyClash/main/Icons/png/Stack.png
 
-  - select:
-      name: IP Location
-      policies: [Proxy, Hong Kong, Japan, United States, Singapore, Taiwan, Other Regions, Manual, DIRECT]
-      icon: mappin.circle.fill
-
 rules:
   # DNS 上游：海外 DoH 走代理，国内 DoH 直连。
   - ip_cidr:
@@ -377,7 +383,7 @@ rules:
       policy: DIRECT
   - rule_set:
       name: 私有网络
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Lan/Lan.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Lan.yaml
       policy: DIRECT
       no_resolve: true
       update_interval: 86400
@@ -396,25 +402,25 @@ rules:
   # 服务分流
   - rule_set:
       name: Threads
-      match: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/threads.list
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Threads.yaml
       policy: Meta
       no_resolve: true
       update_interval: 86400
   - rule_set:
       name: FCM
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/GoogleFCM/GoogleFCM.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/GoogleFCM.yaml
       policy: Google
       no_resolve: true
       update_interval: 86400
   - rule_set:
       name: YouTube
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/YouTube/YouTube.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/YouTube.yaml
       policy: YouTube
       no_resolve: true
       update_interval: 86400
   - rule_set:
       name: TikTok
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/TikTok/TikTok.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/TikTok.yaml
       policy: TikTok
       no_resolve: true
       update_interval: 86400
@@ -432,72 +438,79 @@ rules:
       update_interval: 86400
   - rule_set:
       name: Google
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Google/Google.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Google.yaml
       policy: Google
       no_resolve: true
       update_interval: 86400
   - rule_set:
       name: GitHub
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/GitHub/GitHub.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/GitHub.yaml
       policy: GitHub
       no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Apple
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Apple/Apple_All_No_Resolve.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Apple.yaml
       policy: Apple
+      no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Telegram
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Telegram/Telegram.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Telegram.yaml
       policy: Telegram
       no_resolve: true
       update_interval: 86400
   - rule_set:
+      name: Discord
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Discord.yaml
+      policy: Discord
+      no_resolve: true
+      update_interval: 86400
+  - rule_set:
       name: Twitter
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Twitter/Twitter.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Twitter.yaml
       policy: Twitter
       no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Facebook
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Facebook/Facebook.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Facebook.yaml
       policy: Meta
       no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Instagram
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Instagram/Instagram.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Instagram.yaml
       policy: Meta
       no_resolve: true
       update_interval: 86400
   - rule_set:
       name: WhatsApp
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Whatsapp/Whatsapp.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Whatsapp.yaml
       policy: Meta
       no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Netflix
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Netflix/Netflix.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Netflix.yaml
       policy: Netflix
       no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Spotify
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Spotify/Spotify.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Spotify.yaml
       policy: Spotify
       no_resolve: true
       update_interval: 86400
   - rule_set:
       name: PayPal
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/PayPal/PayPal.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/PayPal.yaml
       policy: PayPal
       no_resolve: true
       update_interval: 86400
   - rule_set:
       name: Microsoft
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Microsoft/Microsoft.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Microsoft.yaml
       policy: Microsoft
       no_resolve: true
       update_interval: 86400
@@ -513,8 +526,9 @@ rules:
       policy: DIRECT
   - rule_set:
       name: 非中国域名
-      match: https://raw.githubusercontent.com/Repcz/EgernRules/X/Rules/Global/Global_All_No_Resolve.yaml
+      match: https://raw.githubusercontent.com/Valiumlove/MultiClientProxyCore/main/rules/Egern/Global.yaml
       policy: Proxy
+      no_resolve: true
       update_interval: 86400
   # 规则集未收录、直接以中国大陆 IP 建立连接的目标直连，不触发本地 DNS 解析以防泄露。
   - geoip:
@@ -580,4 +594,4 @@ modules:
     enabled: true
     update_interval: 86400
     compat_arguments:
-      PROXY: IP Location
+      PROXY: Proxy

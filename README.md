@@ -9,7 +9,7 @@
 <p>国内站点直连 · 海外 AI 独立聚合 · 全量 Real-IP 零泄露 DNS · 开箱即用去广告</p>
 
 <p>
-  <a href="Egern.yaml"><img src="https://img.shields.io/badge/Egern-v2.9-0d9488?style=flat-square&logo=apple&logoColor=white" alt="Egern v2.9" /></a>
+  <a href="Egern.yaml"><img src="https://img.shields.io/badge/Egern-v3.0-0d9488?style=flat-square&logo=apple&logoColor=white" alt="Egern v3.0" /></a>
   <a href="Loon.conf"><img src="https://img.shields.io/badge/Loon-v1.0.3-0284c7?style=flat-square&logo=safari&logoColor=white" alt="Loon v1.0.3" /></a>
   <a href="plugin/ip-attribution.yaml"><img src="https://img.shields.io/badge/IP%20Attribution-242%20Rules-10b981?style=flat-square" alt="IP Attribution" /></a>
   <a href="plugin/LICENSE"><img src="https://img.shields.io/badge/Plugin%20License-GPL--3.0-1e293b?style=flat-square" alt="GPL-3.0" /></a>
@@ -64,7 +64,7 @@
 
 | 适用 App | 文件 | 版本 | 远程导入地址 |
 | :--- | :--- | :---: | :--- |
-| **Egern** | [`Egern.yaml`](Egern.yaml) | `2.9` | `https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml` |
+| **Egern** | [`Egern.yaml`](Egern.yaml) | `3.0` | `https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml` |
 | **Loon** | [`Loon.conf`](Loon.conf) | `1.0.3` | `https://raw.githubusercontent.com/amilokane/Loondrift/main/Loon.conf` |
 | **Egern 模块** | [`plugin/ip-attribution.yaml`](plugin/ip-attribution.yaml) | — | 已内置于 `Egern.yaml`，无需单独导入 |
 | **Loon 插件** | [`plugin/ip-attribution.plugin`](plugin/ip-attribution.plugin) | — | `https://raw.githubusercontent.com/amilokane/Loondrift/main/plugin/ip-attribution.plugin` |
@@ -112,11 +112,11 @@ flowchart LR
 | :--- | :--- | :---: | :--- |
 | **总控入口** | `Proxy` · `Manual` | `Smart` / 全节点 | 主代理出口与全部节点手动选择，置顶方便随时切换 |
 | **AI 与工具** | `AI` · `Google` · `GitHub` | `Proxy` | 聚合海外 AI（ChatGPT / Claude / Gemini / Grok / Cursor / Copilot 等），国内 AI 自动直连 |
-| **社交与通讯** | `Telegram` · `Twitter` · `Meta` | `Proxy` | `Meta` 完整覆盖 Threads、Facebook、Instagram、WhatsApp |
+| **社交与通讯** | `Telegram` · `Discord` · `Twitter` · `Meta` | `Proxy` | `Meta` 完整覆盖 Threads、Facebook、Instagram、WhatsApp |
 | **影音流媒体** | `YouTube` · `TikTok` · `Netflix` · `Spotify` | `Proxy`（TikTok 默认 `Japan`） | TikTok 初始避开香港节点，其余默认跟随主出口 |
 | **默认直连** | `Apple` · `Microsoft` · `PayPal` | `DIRECT` | 默认直连降低延迟与风控，需要时可在组内切代理 |
 | **地区与选优** | `Smart` · `Hong Kong` · `Japan` · `United States` · `Singapore` · `Taiwan` · `Other Regions` | 自动优选 / 手动 | 五大主力地区自动测速（600s / 5s / 50ms 容差），其余地区归入 `Other Regions` |
-| **系统与工具** | `AdBlock` · `Final` · `IP Location` | `REJECT` / `Proxy` / `Proxy` | 广告总开关、未命中兜底出口与内置 IP 归属地出口 |
+| **系统与兜底** | `AdBlock` · `Final` | `REJECT` / `Proxy` | 广告总开关与未命中兜底出口 |
 
 > [!TIP]
 > ChatGPT、Claude、Gemini 等主流海外 AI 屏蔽香港节点。当 `Smart` 选中香港时，直接在 `AI` 组切到 `Manual` 或美/日/新/台地区组即可。
@@ -157,7 +157,7 @@ Egern 启用 `real_ip_domains: ['*']` 与 `hijack_dns: ['*']`，接管全部系�
 | 代理节点自身域名（`proxy_nameservers`） | 阿里 / 腾讯 DoH（`223.5.5.5`、`1.12.12.12`） | 强制直连 |
 
 - 所有 DoH 上游均使用纯 IP 地址，无需明文查询上游域名；`bootstrap` 使用 `223.5.5.5` 与 `119.29.29.29`，不含运营商明文 `system` DNS。
-- YouTube、TikTok、海外 AI、Google、GitHub、Telegram、Twitter、Meta、Netflix、Spotify 规则集均排在国内集合之前，确保始终走海外 DoH。
+- YouTube、TikTok、海外 AI、Google、GitHub、Telegram、Discord、Twitter、Meta、Netflix、Spotify 规则集均排在国内集合之前，确保始终走海外 DoH。
 
 参考文档：[Egern DNS 文档](https://egernapp.com/zh-CN/docs/configuration/dns)
 
@@ -225,7 +225,7 @@ https://raw.githubusercontent.com/amilokane/Loondrift/main/Loon.conf
 
 | 客户端 | 文件 | 使用方式 |
 | :--- | :--- | :--- |
-| **Egern** | [`plugin/ip-attribution.yaml`](plugin/ip-attribution.yaml) | `Egern.yaml` 已内置，出口由 `IP Location` 组控制（单独导入时可通过参数 `PROXY` 指定策略） |
+| **Egern** | [`plugin/ip-attribution.yaml`](plugin/ip-attribution.yaml) | `Egern.yaml` 已内置，默认跟随 `Proxy` 出口（单独导入时可通过参数 `PROXY` 指定策略） |
 | **Loon** | [`plugin/ip-attribution.plugin`](plugin/ip-attribution.plugin) | 需单独导入插件，导入后将 `PROXY` 绑定到目标策略组 |
 
 ```text
@@ -242,10 +242,10 @@ https://raw.githubusercontent.com/amilokane/Loondrift/main/plugin/ip-attribution
 
 | 项目内容 | 上游来源 |
 | :--- | :--- |
-| Egern 服务与广告规则 | [Repcz/EgernRules](https://github.com/Repcz/EgernRules)（基于 blackmatrix7 转换原生 YAML） |
+| Egern 主力业务规则 | [Valiumlove/MultiClientProxyCore](https://github.com/Valiumlove/MultiClientProxyCore)（[Lanxu Space](https://lanxu-space.pages.dev/) / MagicRule 每日同步） |
+| Egern 国内综合与精简广告 | [Repcz/EgernRules](https://github.com/Repcz/EgernRules)（基于 blackmatrix7 转换原生 YAML） |
 | Loon 服务与广告规则 | [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Loon) |
 | 国内与海外 AI 规则 | [VPSDance/ai-proxy-rules](https://github.com/VPSDance/ai-proxy-rules) |
-| Threads 规则列表 | [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat/tree/meta/geo/geosite/classical) |
 | 广告域名补充 | [RiverFlowsInUUU/RFU-Rules](https://github.com/RiverFlowsInUUU/RFU-Rules) |
 | Egern 模块来源 | [Egern Hub](https://egern.pages.dev/) · [IBL3ND/module](https://github.com/IBL3ND/module) |
 | Loon 插件来源 | [可莉插件中心](https://hub.kelee.one/) |

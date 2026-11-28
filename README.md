@@ -4,10 +4,10 @@
 
 <h1>Loondrift</h1>
 
-<p><strong>适用于 Egern 与 Loon 的轻量 iOS 分流配置</strong></p>
+<p><strong>轻量、零泄露、开箱即用的 iOS 分流配置（Egern &amp; Loon）</strong></p>
 
 <p>
-  <a href="Egern.yaml"><img src="https://img.shields.io/badge/Egern-v3.2-0d9488?style=flat-square&logo=apple&logoColor=white" alt="Egern v3.2" /></a>
+  <a href="Egern.yaml"><img src="https://img.shields.io/badge/Egern-v3.1-0d9488?style=flat-square&logo=apple&logoColor=white" alt="Egern v3.1" /></a>
   <a href="Loon.conf"><img src="https://img.shields.io/badge/Loon-v1.0.3-0284c7?style=flat-square&logo=safari&logoColor=white" alt="Loon v1.0.3" /></a>
   <a href="plugin/ip-attribution.yaml"><img src="https://img.shields.io/badge/IP%20Attribution-242%20Rules-10b981?style=flat-square" alt="IP Attribution" /></a>
   <a href="plugin/LICENSE"><img src="https://img.shields.io/badge/Plugin-GPL--3.0-334155?style=flat-square" alt="GPL-3.0" /></a>
@@ -29,7 +29,7 @@
 
 | 特性 | 说明 |
 | :--- | :--- |
-| **Egern Fake IP 与加密 DNS** | 普通域名使用 Fake IP，局域网后缀返回真实 IP。常规解析按域名分流到国内直连 DoH 或经代理的海外 DoH。 |
+| **全量 Real-IP 零泄露 DNS** | 纯 IP 加密 DoH 分流：国内与节点解析直连阿里 / 腾讯 DoH，海外与未知域名经代理走 Cloudflare / Google DoH，无明文泄露 |
 | **智能倍率权重与自动测速** | `Smart` 按延迟、抖动与成功率评分并加权 `<1x` / `1x` / `>1x` 倍率；五大主力地区每 10 分钟自动测速选优 |
 | **AI 与主流服务精细分流** | DeepSeek、豆包等国内 AI 自动直连；ChatGPT、Claude、Gemini、Grok、Cursor、Copilot 等海外 AI 独立聚合 |
 | **开箱即用去广告与增强** | Egern 内置 13 个精选模块（App 去广告、YouTube 增强、WeatherKit、IP 归属地），统一 24h 自动更新 |
@@ -42,7 +42,7 @@
 
 | 客户端 | 文件 | 版本 | 远程导入链接 |
 | :--- | :--- | :---: | :--- |
-| **Egern** | [`Egern.yaml`](Egern.yaml) | `3.2` | `https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml` |
+| **Egern** | [`Egern.yaml`](Egern.yaml) | `3.1` | `https://raw.githubusercontent.com/amilokane/Loondrift/main/Egern.yaml` |
 | **Loon** | [`Loon.conf`](Loon.conf) | `1.0.3` | `https://raw.githubusercontent.com/amilokane/Loondrift/main/Loon.conf` |
 | **Loon 插件** | [`plugin/ip-attribution.plugin`](plugin/ip-attribution.plugin) | — | `https://raw.githubusercontent.com/amilokane/Loondrift/main/plugin/ip-attribution.plugin` |
 
@@ -94,20 +94,20 @@
 </details>
 
 <details>
-<summary><strong>Fake IP、局域网例外与 DNS 分流</strong></summary>
+<summary><strong>Real-IP 零泄露 DNS 架构</strong></summary>
 
 <br />
 
-启用 `hijack_dns: ['*']`。普通域名使用 Fake IP，以下四个局域网后缀及其子域名使用真实 IP。所有 DoH 上游均直接使用 IP 地址，连接这些上游无需明文引导查询。
+启用 `real_ip_domains: ['*']` 与 `hijack_dns: ['*']`，所有 DoH 上游均为纯 IP，引导 DNS 为 `223.5.5.5` / `119.29.29.29`：
 
 | 匹配范围 | 上游 DNS | 路径 |
 | :--- | :--- | :---: |
 | `.local` / `.lan` / `.localdomain` / `.home.arpa` | 系统 DNS | 当前网络 |
 | 国内 AI / `ChinaMax` / `.cn` / Apple / Microsoft / PayPal | 阿里 & 腾讯 DoH（`223.5.5.5` / `1.12.12.12`） | `DIRECT` |
 | 海外服务规则集 & 其余未知域名 | Cloudflare & Google DoH（`1.1.1.1` / `8.8.8.8`） | 经 `Proxy` |
-| Egern 的代理 DNS 查询（`proxy_nameservers`，跳过 `forward`） | 阿里 & 腾讯 DoH（`223.5.5.5` / `1.12.12.12`） | 强制直连 |
+| 代理节点自身域名（`proxy_nameservers`） | 阿里 & 腾讯 DoH（`223.5.5.5` / `1.12.12.12`） | 强制直连 |
 
-普通查询由最后的 `* → PUBLIC-DOH` 兜底。Egern 的 `bootstrap` 使用直连 UDP，本配置保留 `223.5.5.5` 和 `119.29.29.29` 作为引导 DNS。局域网查询使用当前网络提供的系统 DNS。
+所有默认代理服务规则集均位于国内集合之前，避免个别域名被国内集合抢先命中。
 
 </details>
 
